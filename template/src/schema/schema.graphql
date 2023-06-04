@@ -1,0 +1,13 @@
+type User {
+  id: ID!
+  username: String!
+  firstName: String
+  lastName: String
+}
+
+type Query {
+  getIdentity: User!
+}
+
+# type Mutation
+# type Subscription

@@ -1,0 +1,17 @@
+// @use "../../styles/mixins.scss" as *;
+
+.backdrop {
+  // @include dock;
+  // @include flex-center;
+  // background: rgba(0, 0, 0, .01);
+  font-size: 4em;
+  transition-property: opacity;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in-out;
+  // color: var(--primary-100);
+  background-color: rgba(255, 255, 255, .6);
+
+  &[hidden="true"] {
+    opacity: 0;
+  }
+}
