@@ -1,7 +1,8 @@
 import { Config } from '../../config/config';
 import { getNowSeconds } from '../../core/dateTimeUtils';
-import { isFiniteNumber, isNonEmptyString } from '../../core/typeUtils';
-import { Maybe } from '../../core/types';
+import { isDefinedObject, isFiniteNumber, isNonEmptyString } from '../../core/typeUtils';
+import { Maybe, MaybeProps } from '../../core/types';
+import { LoginInput } from './authInputSchema';
 import { AuthTokenPayload } from './authSchema';
 
 const AuthConfig = Config.auth;
@@ -14,4 +15,17 @@ export function isTokenValid(expires: Maybe<number>): boolean {
   if (!expires)
     return false;
   return expires > getNowSeconds() + TokenExpiryDelta / 1000;
+}
+
+export function isValidLoginInput(input: MaybeProps<LoginInput>): input is LoginInput {
+
+  if (!isDefinedObject(input))
+    return false;
+
+  if (
+    !isNonEmptyString(input.username) ||
+    !isNonEmptyString(input.password))
+    return false;
+
+  return true;
 }

@@ -17,6 +17,11 @@ const ServiceConfig = Config.api;
 const GraphQlConfig = ServiceConfig.graphql;
 const ApolloConfig = ServiceConfig.apollo;
 
+/**
+ * Handles API connectivity and communicates with the `AuthService` to obtain tokens and refresh the AuthContext if it expires. 
+ * The current implementation is for GraphQL and supports queries, mutations and subscription. 
+ * There is also support for file uploads with progress monitoring.
+ */
 export class ApiService
   extends ServiceBase {
 
@@ -35,7 +40,7 @@ export class ApiService
   }
 
 
-  async runAuthStateSyncLoop() {
+  private async runAuthStateSyncLoop() {
     const { stateManager } = this.kernel.authService;
     for await (const state of stateManager.stateIterable) {
       this.createApolloClient();

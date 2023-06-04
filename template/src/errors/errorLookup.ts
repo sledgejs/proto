@@ -6,15 +6,25 @@ import { ResourceErrorLookup } from '../services/resource/resourceErrors';
 import { withTypedKeysErrorLookup } from './errorLookupUtils';
 import { RoutingErrorLookup } from '../services/routing/routingErrors';
 import { ApiErrorLookup } from '../services/api/apiErrors';
+import { LoginErrorLookup } from '../pages/login/loginErrors';
+import { FormErrorLookup } from '../components/form/formErrors';
 
 export const ErrorLookup = withTypedKeysErrorLookup({
+  // core
   ...StorageErrorLookup,
   
+  // services
   ...ServiceErrorLookup,
   ...ApiErrorLookup,
   ...AuthErrorLookup,
   ...RoutingErrorLookup,
   ...ResourceErrorLookup,
+
+  // components
+  ...FormErrorLookup,
+
+  // pages
+  ...LoginErrorLookup,
 
   ErrorGroup: {
     message: `Multiple errors have occurred.`

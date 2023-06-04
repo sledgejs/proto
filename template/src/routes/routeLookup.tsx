@@ -4,9 +4,9 @@ import { RouteDescriptor, RouteType } from './routeSchema';
 import { Routes } from './routes';
 import NotFoundErrorPage from '../pages/error/notFoundErrorPage';
 
-const LoginPage = React.lazy(() => import('../pages/auth/login/loginPage'));
-const LogoutPage = React.lazy(() => import('../pages/auth/logout/logoutPage'));
 const DefaultPage = React.lazy(() => import('../pages/default/defaultPage'));
+const LoginPage = React.lazy(() => import('../pages/login/loginPage'));
+const LogoutPage = React.lazy(() => import('../pages/logout/logoutPage'));
 const DashboardPage = React.lazy(() => import('../pages/dashboard/dashboardPage'));
 
 export const RouteLookup: Record<string, RouteDescriptor> = {

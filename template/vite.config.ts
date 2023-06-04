@@ -41,7 +41,6 @@ export default defineConfig(({ command, mode }) => {
               'react',
               'react-dom',
               'react-router-dom',
-              'uuid',
               'mobx',
               'mobx-react-lite'
             ]
