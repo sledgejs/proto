@@ -16,10 +16,10 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "rootDir": "src/",
-    "outDir": "dist/"
+    "outDir": "out/",
+    "declaration": true
   },
   "include": [
     "src"
