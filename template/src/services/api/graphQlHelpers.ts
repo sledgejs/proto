@@ -1,64 +1,63 @@
 import { ApolloClient, ApolloError, ApolloQueryResult, DefaultContext, DocumentNode, FetchResult, MutationOptions, NormalizedCacheObject, Observable, OperationVariables, QueryOptions, ServerError, SubscriptionOptions } from '@apollo/client';
-import { GraphQLError, OperationDefinitionNode } from 'graphql';
+import { OperationDefinitionNode } from 'graphql';
 import { AsyncResult, Maybe, Result } from '../../core/types';
-import { trace } from '../../dev';
 import { Error } from '../../errors/error';
-import { ApiRequestAuthMode, GraphQlMutationParams, GraphQlOperationParams, GraphQlQueryParams, GraphQlSubscriptionParams } from './apiSchema';
+import { GraphQlMutationParams, GraphQlOperationParams, GraphQlQueryParams, GraphQlSubscriptionParams } from './graphQlSchema';
+import { ApiRequestAuthMode } from './apiSchema';
 import { ApiRequestExecutor, ApiRequestExecutorParams } from './apiInteropSchema';
 import { AuthStateMediator } from '../auth/authStateMediator';
 import { Node } from '../../kernel/node';
 import { runApiRequest } from './apiRequestHelpers';
 import { RouteType } from '../../routes/routeSchema';
 
-export function getGraphQlOperationName(doc: DocumentNode) {
-  const opDef = doc.definitions.find(def => def.kind === 'OperationDefinition') as OperationDefinitionNode;
-  if (opDef)
-    return opDef.name?.value ?? null;
+import { trace } from '../../dev';
 
-  return null;
-}
+/**
+ * Executes a GraphQL query using the provided arguments.
+ * 
+ * @param target  The object which owns this method call.
+ *                Used for diagnostics and to access the {@link Kernel}.
+ * @param client  The ApolloClient instance to use for executing the query.
+ * @param params  The parameters of the query.
+ * 
+ * @typeParam TData The type of the data returned by the query.
+ * @typeParam TVars The type of the variables passed to the query.
+ */
+export async function runGraphQlQuery<
+  TData = any,
+  TVars extends OperationVariables = OperationVariables>(
+    target: Node,
+    client: ApolloClient<NormalizedCacheObject>,
+    params: GraphQlQueryParams<TData, TVars>): AsyncResult<TData> {
 
-export function getGraphQlOperationContext(resolvedParams: Partial<ApiRequestExecutorParams>): DefaultContext {
+  const executor: ApiRequestExecutor<TData> = async (resolvedParams) => {
 
-  const {
-    token,
-    abortSignal
-  } = resolvedParams;
+    const options: QueryOptions = {
+      ...getGraphQlBaseOptions(params, resolvedParams),
+      query: params.query
+    }
 
-  const context: DefaultContext = {
-    authMode: 'test',
-    headers: {
-      'Authorization': 'Bearer ' + token
-    },
-    fetchOptions: {
-      signal: abortSignal
+    try {
+      return decodeResult(await client.query(options));
+    } catch (rawErr) {
+      return decodeResult(null, rawErr);
     }
   }
 
-  return context;
+  return runGraphQlOperation(target, executor, params);
 }
 
-type Options = QueryOptions | MutationOptions | SubscriptionOptions;
-type BaseOptions = Omit<Options, 'query' | 'mutation' | 'fetchPolicy'> & {
-  fetchPolicy?: any // TODO: find a fix 
-};
-
-export function getGraphQlBaseOptions(
-  params: GraphQlOperationParams,
-  resolvedParams: ApiRequestExecutorParams): BaseOptions {
-
-  const context = getGraphQlOperationContext(resolvedParams);
-
-  const baseOptions: BaseOptions = {
-    ...params.clientOptions,
-    variables: params.variables ?? undefined,
-    context: context
-  }
-
-  return baseOptions;
-}
-
-
+/**
+ * Executes a GraphQL mutation using the provided arguments.
+ * 
+ * @param target  The object which owns this method call.
+ *                Used for diagnostics and to access the {@link Kernel}.
+ * @param client  The ApolloClient instance to use for executing the mutation.
+ * @param params  The parameters of the mutation.
+ * 
+ * @typeParam TData The type of the data returned by the mutation.
+ * @typeParam TVars The type of the variables passed to the mutation.
+ */
 export async function runGraphQlMutation<
   TData = any,
   TVars extends OperationVariables = OperationVariables>(
@@ -95,33 +94,18 @@ export async function runGraphQlMutation<
   return runGraphQlOperation(target, executor, params);
 }
 
-
-
-
-export async function runGraphQlQuery<
-  TData = any,
-  TVars extends OperationVariables = OperationVariables>(
-    target: Node,
-    client: ApolloClient<NormalizedCacheObject>,
-    params: GraphQlQueryParams<TData, TVars>): AsyncResult<TData> {
-
-  const executor: ApiRequestExecutor<TData> = async (resolvedParams) => {
-
-    const options: QueryOptions = {
-      ...getGraphQlBaseOptions(params, resolvedParams),
-      query: params.query
-    }
-
-    try {
-      return decodeResult(await client.query(options));
-    } catch (rawErr) {
-      return decodeResult(null, rawErr);
-    }
-  }
-
-  return runGraphQlOperation(target, executor, params);
-}
-
+/**
+ * Starts a GraphQL subscription using the provided arguments and returns the
+ * resulting `Observable` instance.
+ * 
+ * @param target  The object which owns this method call.
+ *                Used for diagnostics and to access the {@link Kernel}.
+ * @param client  The ApolloClient instance to use for creating the subscription.
+ * @param params  The parameters of the subscription.
+ * 
+ * @typeParam TData The type of the data emitted by the subscription.
+ * @typeParam TVars The type of the variables passed to the subscription.
+ */
 export async function runGraphQlSubscription<
   TData = any,
   TVars extends OperationVariables = OperationVariables>(
@@ -146,7 +130,30 @@ export async function runGraphQlSubscription<
   return runGraphQlOperation(target, executor, params);
 }
 
-export async function runGraphQlOperation<TValue = any, TData = any, TVars extends OperationVariables = OperationVariables>(
+export function getGraphQlOperationName(doc: DocumentNode) {
+  const opDef = doc.definitions.find(def => def.kind === 'OperationDefinition') as OperationDefinitionNode;
+  if (opDef)
+    return opDef.name?.value ?? null;
+
+  return null;
+}
+
+export function getGraphQlBaseOptions(
+  params: GraphQlOperationParams,
+  resolvedParams: ApiRequestExecutorParams): BaseOptions {
+
+  const context = getGraphQlOperationContext(resolvedParams);
+
+  const baseOptions: BaseOptions = {
+    ...params.clientOptions,
+    variables: params.variables ?? undefined,
+    context: context
+  }
+
+  return baseOptions;
+}
+
+async function runGraphQlOperation<TValue = any, TData = any, TVars extends OperationVariables = OperationVariables>(
   target: Node,
   executor: ApiRequestExecutor<TValue>,
   params: GraphQlOperationParams<TData, TVars>): AsyncResult<TValue> {
@@ -159,6 +166,7 @@ export async function runGraphQlOperation<TValue = any, TData = any, TVars exten
   const mediator = new AuthStateMediator(target.kernel);
 
   if (!authMode) {
+    // TODO: fix
     authMode = target.kernel.routingService.history.context.descriptor.routeType === RouteType.Public ?
       ApiRequestAuthMode.Public :
       ApiRequestAuthMode.Private;
@@ -179,6 +187,31 @@ export async function runGraphQlOperation<TValue = any, TData = any, TVars exten
   trace(target, `Task completed successfully with response: `, res);
   return [res];
 }
+
+function getGraphQlOperationContext(resolvedParams: Partial<ApiRequestExecutorParams>): DefaultContext {
+
+  const {
+    token,
+    abortSignal
+  } = resolvedParams;
+
+  const context: DefaultContext = {
+    authMode: 'test',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    },
+    fetchOptions: {
+      signal: abortSignal
+    }
+  }
+
+  return context;
+}
+
+type Options = QueryOptions | MutationOptions | SubscriptionOptions;
+type BaseOptions = Omit<Options, 'query' | 'mutation' | 'fetchPolicy'> & {
+  fetchPolicy?: any // TODO: find a fix 
+};
 
 function decodeResult<TData = any>(
   rawResult: Maybe<ApolloQueryResult<TData> | FetchResult<TData>>,

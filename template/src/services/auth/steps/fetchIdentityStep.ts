@@ -5,7 +5,8 @@ import { Error } from '../../../errors/error';
 import { UserIdentity } from '../userIdentity';
 import { gql } from '@apollo/client';
 import { AuthFetchIdentityStepQuery, User } from '../../../.generated/graphql';
-import { ApiRequestAuthMode, GraphQlQueryParams } from '../../api/apiSchema';
+import { ApiRequestAuthMode } from '../../api/apiSchema';
+import { GraphQlQueryParams } from '../../api/graphQlSchema';
 import { ErrorCode } from '../../../errors/errorCode';
 import { EntityData } from '../../../data/entitySchema';
 

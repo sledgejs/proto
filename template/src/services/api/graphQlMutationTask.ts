@@ -1,11 +1,12 @@
 import { ApolloClient, DocumentNode, NormalizedCacheObject, OperationVariables, TypedDocumentNode } from '@apollo/client';
 import { nanoid } from 'nanoid';
 import { AsyncResult } from '../../core/types';
-import { initDev, trace } from '../../dev';
 import { Kernel } from '../../kernel/kernel';
-import { GraphQlMutationParams } from './apiSchema';
 import { BaseTask } from '../../tasks/baseTask';
+import { GraphQlMutationParams } from './graphQlSchema';
 import { getGraphQlOperationName, runGraphQlMutation } from './graphQlHelpers';
+
+import { initDev, trace } from '../../dev';
 
 type Props<
   TData = any,

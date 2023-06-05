@@ -5,7 +5,7 @@ import type { AsyncResult } from '../../core/types';
 import { initDev, trace } from '../../dev';
 import { Kernel } from '../../kernel/kernel';
 import { Node } from '../../kernel/node';
-import { GraphQlSubscriptionParams } from './apiSchema';
+import { GraphQlSubscriptionParams } from './graphQlSchema';
 import { getGraphQlOperationName, runGraphQlSubscription } from './graphQlHelpers';
 import { AsyncIterableRelay } from '../../core/async/asyncIterableRelay';
 
@@ -17,7 +17,7 @@ type Props<
   };
 
 /** 
- * Wrapper around a GraphQL request made using Apollo. 
+ * Wrapper around a GraphQL subscription run using Apollo. 
  * Handles everything regarding authentication, network connectivity, debugging, etc.
  */
 export class GraphQlSubscription<

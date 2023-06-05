@@ -2,7 +2,7 @@ import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, InMemoryCacheConfig,
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { ServiceBase } from '../serviceBase';
 import { ServiceName } from '../serviceSchema';
-import { GraphQlMutationParams, GraphQlQueryParams, GraphQlSubscriptionParams } from './apiSchema';
+import { GraphQlMutationParams, GraphQlQueryParams, GraphQlSubscriptionParams } from './graphQlSchema';
 import { AsyncResult } from '../../core/types';
 import { GraphQlSubscription } from './graphQlSubscription';
 import { GraphQlMutationTask } from './graphQlMutationTask';

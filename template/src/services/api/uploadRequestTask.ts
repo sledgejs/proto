@@ -21,8 +21,8 @@ export type UploadRequestFormField = {
 }
 
 /**
- * Simple wrapper for an upload task on a provided url.
- * Contains upload progress information.
+ * Wrapper for an upload task on a provided url.
+ * Exposes upload progress information.
  * Uses axios behind the scenes because it was too complicated for the people
  * writing the fetch spec to include progress information.
  */

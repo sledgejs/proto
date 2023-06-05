@@ -1,18 +1,49 @@
 import { assert, assertDefined } from '../../core/assert';
-import { AsyncResult } from '../../core/types';
+import { AbortableParams, AsyncResult } from '../../core/types';
 import { Error } from '../../errors/error';
 import { AuthContextType, AuthStateType } from '../auth/authSchema';
 import { AuthState } from '../auth/authState';
 import { ApiRequestExecutor, ApiRequestExecutorParams, IApiRequestAuthMediator } from './apiInteropSchema';
 import { ApiRequestAuthMode } from './apiSchema';
 
-type Params<T> = {
-  executor: ApiRequestExecutor<T>,
-  mediator: IApiRequestAuthMediator,
-  abortSignal?: AbortSignal | null,
-  authMode: ApiRequestAuthMode
+/**
+ * @interface
+ * 
+ * The parameters to be passed to {@link runApiRequest}.
+ * @typeParam T The type of the data returned by the request.
+ */
+export type RunApiRequestParams<T> = AbortableParams & {
+
+  /**
+   * The actual code to execute the request, wait for the response and return the result.
+   * @see {@link ApiRequestExecutor} for more details regarding how the executor should be written.
+   */
+  executor: ApiRequestExecutor<T>;
+
+  /**
+   * The authorization mediator to be used for authorization operations.
+   * @see {@link IApiRequestAuthMediator} for more details regarding how to implement a mediator.
+   */
+  mediator: IApiRequestAuthMediator;
+
+  /**
+   * The authorization mode to be used.
+   * @see {@link ApiRequestAuthMode} for more details regarding how to set this option.
+   */
+  authMode: ApiRequestAuthMode;
 }
 
+type Params<T> = RunApiRequestParams<T>;
+
+/**
+ * Runs an API request using the provided parameters.
+ * The purpose of this helper is to handle all shared operations regarding authorization,
+ * network connectivity, parameters and result decoding, and only delegate to the 
+ * {@link RunApiRequestParams#executor} function the actual custom logic of the request.
+ * 
+ * @param params The parameters to use for the request.
+ * @typeParam T The type of the data returned by the request.
+ */
 export async function runApiRequest<T>(params: Params<T>): AsyncResult<T> {
 
   const { mediator } = params;

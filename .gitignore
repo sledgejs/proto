@@ -21,6 +21,7 @@ yarn-error.log*
 **/.generated
 **/.temp
 **/dist
+**/docs
 **/out
 **/node_modules
 **/build

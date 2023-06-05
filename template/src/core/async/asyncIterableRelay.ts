@@ -26,7 +26,8 @@ export const AsyncIterableRelayDefaultProps: AsyncIterableRelayProps = {
 }
 
 /**
- * Represents an AsyncIterable object which can be controlled by an external object.
+ * Exposes an `AsyncIterable` object and also methods to control it programatically.
+ * @typeParam T - The type of the iteration value.
  */
 export class AsyncIterableRelay<T> {
 
@@ -42,11 +43,21 @@ export class AsyncIterableRelay<T> {
     this.createPromiseRelay();
   }
 
+  /**
+   * The time in milliseconds after which the iterable will return a Timeout error.
+   */
   readonly iterationTimeout: number | null;
 
+  /**
+   * The iterable which is being controlled.
+   */
   readonly iterable: AsyncIterable<T>;
+  
   private promiseRelay: PromiseRelay<T> | null = null;
 
+  /**
+   * Instructs the iterable to yield a new value.
+   */
   next(val: T) {
     if (this.promiseRelay)
       this.promiseRelay.resolve(val);
@@ -54,6 +65,9 @@ export class AsyncIterableRelay<T> {
     this.createPromiseRelay();
   }
 
+  /**
+   * Instructs the iterable to complete.
+   */
   done(val: T) {
     if (this.promiseRelay)
       this.promiseRelay.resolve(val);

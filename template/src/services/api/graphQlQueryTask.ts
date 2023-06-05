@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { AsyncResult } from '../../core/types';
 import { initDev, trace } from '../../dev';
 import { Kernel } from '../../kernel/kernel';
-import { GraphQlQueryParams } from './apiSchema';
+import { GraphQlQueryParams } from './graphQlSchema';
 import { BaseTask } from '../../tasks/baseTask';
 import { getGraphQlOperationName, runGraphQlQuery } from './graphQlHelpers';
 

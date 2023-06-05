@@ -4,7 +4,6 @@ import { Kernel } from '../../kernel/kernel';
 import { type AuthFlowResponse } from '../../services/auth/authSchema';
 import type { LoginInput } from '../../services/auth/authInputSchema';
 import { LoginFlow } from '../../services/auth/flows/loginFlow';
-import { ITaskLike } from '../../tasks/taskSchema';
 import { BaseTask, BaseTaskProps } from '../../tasks/baseTask';
 
 type Props = BaseTaskProps & {
@@ -12,8 +11,7 @@ type Props = BaseTaskProps & {
 }
 
 export class LoginSubmitTask
-  extends BaseTask<AuthFlowResponse>
-  implements ITaskLike<AuthFlowResponse> {
+  extends BaseTask<AuthFlowResponse> {
 
   constructor(kernel: Kernel, props: Props) {
     super(kernel, props);

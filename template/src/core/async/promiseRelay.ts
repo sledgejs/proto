@@ -15,7 +15,9 @@ export const PromiseRelayDefaultProps: PromiseRelayProps = {
 }
 
 /**
- * Wrapper around a Promise object which can be controlled externally.
+ * Exposes a `Promise` object and also methods to control it programatically.
+ * @typeParam T       - The type of the value the Promise will resolve to.
+ * @typeParam TError  - The type of the error the Promise will reject to.
  */
 export class PromiseRelay<T, TError = any> {
 
@@ -37,28 +39,57 @@ export class PromiseRelay<T, TError = any> {
 			this.start();
 	}
 
+  /** 
+   * Returns the Promise that is being controlled.
+   */
 	promise: Promise<T>;
+
 	private resolvePromise!: PromiseResolveFunc<T>;
 	private rejectPromise!: PromiseRejectFunc<TError | Error>;
 
+  /** 
+   * Returns true if the Promise has been resolved. 
+   */
 	isResolved = false;
+  
+  /** 
+   * Returns true if the Promise has been rejected. 
+   */
 	isRejected = false;
 
+  /** 
+   * Returns true if the Promise has been either resolved or rejected. 
+   */
 	get isSettled() {
 		return this.isResolved || this.isRejected;
 	}
 
+  /** 
+   * Returns the value of the `timeout` property as it has been specified in the constructor props.
+   */
 	readonly timeout: number | null = null;
+  
+  /** 
+   * Returns the value of the `autoStart` property as it has been specified in the constructor props.
+   */
 	readonly autoStart: boolean | null = null;
 
 	private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
+  /**
+   * Starts the timeout clock, if a {@link PromiseRelayProps#timeout | timeout} has been provided.
+   */
 	start() {
 		const { timeout } = this;
 		if (timeout)
 			this.timeoutId = setTimeout(this.handleTimeout, timeout);
 	}
 
+  /**
+   * Resolves the Promise using the provided value.
+   * 
+   * @param val The value with which to resolve the Promise.
+   */
 	resolve(val?: T) {
 		if (this.isSettled)
 			return console.warn(`PromiseRelay has already been settled. Call will be discarded.`);
@@ -68,6 +99,11 @@ export class PromiseRelay<T, TError = any> {
 		this.clearTimeout();
 	}
 
+  /**
+   * Rejects the Promise using the provided error.
+   * 
+   * @param err The error with which to reject the Promise.
+   */
 	reject(err?: TError | Error) {
 		if (this.isSettled)
 			return console.warn(`PromiseRelay has already been settled. Call will be discarded.`);

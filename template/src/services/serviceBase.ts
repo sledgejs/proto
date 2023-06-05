@@ -10,5 +10,8 @@ export abstract class ServiceBase
     super(kernel);
   }
 
+  /**
+   * The qualified service name.
+   */
   abstract get serviceName(): ServiceName;
 }
