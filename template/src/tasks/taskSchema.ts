@@ -9,12 +9,12 @@ export type DefaultTaskValueType = true;
  */
 export enum TaskStatus {
   /**
-   * The task has not been started yet using {@link Task#run}.
+   * The task has not been started yet using {@link ITask.run}.
    */
   Idle = 'Idle',
 
   /**
-   * The task has been started using {@link Task#run} but it hasn't settled yet.
+   * The task has been started using {@link ITask.run} but it hasn't settled yet.
    */
   Running = 'Running',
   
@@ -88,27 +88,27 @@ export interface ITask<T = DefaultTaskValueType>
   error: Error | null;
 
   /** 
-   * Returns `true` if {@link ITask#status} is set to {@link TaskStatus#Idle}. 
+   * Returns `true` if {@link ITask.status} is set to {@link TaskStatus.Idle}. 
    */
   isIdle: boolean;
   
   /** 
-   * Returns `true` if {@link ITask#status} is set to {@link TaskStatus#Running}. 
+   * Returns `true` if {@link ITask.status} is set to {@link TaskStatus.Running}. 
    */
   isRunning: boolean;
   
   /** 
-   * Returns `true` if {@link ITask#status} is set to {@link TaskStatus#Completed}. 
+   * Returns `true` if {@link ITask.status} is set to {@link TaskStatus.Completed}. 
    */
   isCompleted: boolean;
   
   /** 
-   * Returns `true` if {@link ITask#status} is set to {@link TaskStatus#Error}. 
+   * Returns `true` if {@link ITask.status} is set to {@link TaskStatus.Error}. 
    */
   isError: boolean;
   
   /** 
-   * Returns `true` if either {@link ITask#isCompleted} or {@link ITask#isError} is `true`.
+   * Returns `true` if either {@link ITask.isCompleted} or {@link ITask.isError} is `true`.
    */
   isSettled: boolean;
   

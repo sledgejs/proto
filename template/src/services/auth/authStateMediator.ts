@@ -1,21 +1,30 @@
-import { AsyncResult } from '../../core/types';
-import { initDev, trace } from '../../dev';
-import { Kernel } from '../../kernel/kernel';
-import { Node } from '../../kernel/node';
-import { AuthContext } from './authContext';
 import { Error } from '../../errors/error';
+import { Node } from '../../kernel/node';
 import { AuthFlowResponseType, AuthStateType } from './authSchema';
-import { IApiRequestAuthMediator } from '../api/apiInteropSchema';
-import { AuthState } from './authState';
-import { AuthStateManager } from './authStateManager';
 
+import type { AsyncResult } from '../../core/types';
+import type { Kernel } from '../../kernel/kernel';
+import type { IApiRequestAuthMediator } from '../api/apiInteropSchema';
+import type { AuthContext } from './authContext';
+import type { AuthState } from './authState';
+import type { AuthStateManager } from './authStateManager';
+
+import { initDev, trace } from '../../dev';
+
+/**
+ * Implementation of {@link IApiRequestAuthMediator} that uses 
+ * {@link AuthService} and the objects associated with it.
+ */
 export class AuthStateMediator
   extends Node
   implements IApiRequestAuthMediator {
 
+  /**
+   * Creates a new instance of the {@link AuthStateMediator} class.
+   */
   constructor(kernel: Kernel) {
     super(kernel);
-    
+
     initDev(this);
     trace(this);
   }
@@ -24,35 +33,38 @@ export class AuthStateMediator
     return this.kernel.authService.stateManager;
   }
 
+  /**
+   * Gets the current {@link AuthContext} of the application.
+   */
   getContext(): AuthContext | null {
     return this.stateManager.getContext();
   }
 
+  /**
+   * Gets the current {@link AuthState} of the application.
+   */
   getState(): AuthState {
     return this.stateManager.state;
   }
 
+  /**
+   * Runs a {@link RefreshContextFlow} and depending on the result,
+   * returns the corresponding {@link AuthState}.
+   * If the flow succeeds then an {@link AuthStateType.Authorized} {@link AuthState} is returned.
+   * Otherwise a redirect will happen to the appropriate auth page.
+   */
   async reauthorize(): AsyncResult<AuthState> {
 
     trace(this);
-
-    return this.refreshContext();
-  }
-
-  async waitForNextState(typeFilter: Iterable<AuthStateType> | null = null): Promise<AuthState> {
-    const nextState = await this.stateManager.waitForNextState(typeFilter);
-    return nextState;
-  }
-
-  async refreshContext(): AsyncResult<AuthState> {
-
-    trace(this, `refreshContext()`);
 
     const { authService, routingService } = this.kernel;
     if (!authService.canRunFlow)
       return [null, new Error('InternalError', { message: `Cannot run the RefreshPermitFlow because there is another flow in progress.` })];
 
-    const [res, err] = await this.runRefreshContextFlow();
+    const { RefreshContextFlow } = await import('./flows/refreshContextFlow');
+    const flow = new RefreshContextFlow(this.kernel);
+    const [res, err] = await flow.run();
+
     if (err)
       return [null, err];
 
@@ -88,9 +100,11 @@ export class AuthStateMediator
     return [null, new Error('InternalError', { message: `Your session has expired. You should be redirected to the login page.` })];
   }
 
-  async runRefreshContextFlow() {
-    const { RefreshContextFlow } = await import('./flows/refreshContextFlow');
-    const flow = new RefreshContextFlow(this.kernel);
-    return flow.run();
+  /**
+   * @inheritDoc AuthStateManager.waitForNextState
+   */
+  async waitForNextState(typeFilter: Iterable<AuthStateType> | null = null): Promise<AuthState> {
+    const nextState = await this.stateManager.waitForNextState(typeFilter);
+    return nextState;
   }
 }

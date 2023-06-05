@@ -44,6 +44,20 @@ export type {
 // #region services.auth
 export type { LoginFlow } from './services/auth/flows/loginFlow';
 export type { AuthService } from './services/auth/authService';
+export type { 
+  IAuthFlow,
+  AuthContextType, 
+  AuthStateType
+} from './services/auth/authSchema';
+export type { AuthContext, AuthContextProps } from './services/auth/authContext';
+export type { AuthState } from './services/auth/authState';
+export type { AuthPermit } from './services/auth/authPermit';
+export type { AuthStateMediator } from './services/auth/authStateMediator';
+export type { AuthStateManager } from './services/auth/authStateManager';
+
+export type { AuthRouteFlow } from './services/auth/flows/authRouteFlow';
+export type { PrivateRouteFlow } from './services/auth/flows/privateRouteFlow';
+export type { PublicRouteFlow } from './services/auth/flows/publicRouteFlow';
 // #endregion
 
 export type { ServiceBase } from './services/serviceBase';

@@ -8,6 +8,14 @@ type Source = {
   lastName?: string | null;
 }
 
+/**
+ * Represents the currently authenticated user in the application.
+ * Should have the same interface as a {@link User} object.
+ * This is a data entity and it should be immutable.
+ * 
+ * @remarks
+ * This implementation is a stub and is used as a sample.
+ */
 export class UserIdentity
   extends Node {
 

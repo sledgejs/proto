@@ -10,7 +10,7 @@ import { isResult } from '../core/typeUtils';
 /**
  * Attempts to extract a display message from the provided arguments.
  * @param err             The value to decode.
- *                        - If the value is an {@link Error} it returns the {@link Error#displayMessage} value.
+ *                        - If the value is an {@link Error} it returns the {@link Error.displayMessage} value.
  *                        - If the value is a `string` it is returned as it is.
  *                        - If no value is provided then the default value is returned.
  * @param defaultMessage  The value to decode if no `err` argument is provided.
@@ -28,7 +28,7 @@ export function getErrorDisplayMessage(
  * 
  * Attempts to extract a display heading from the provided arguments.
  * @param err             The value to decode.
- *                        - If the value is an {@link Error} it returns the {@link Error#displayHeading} value.
+ *                        - If the value is an {@link Error} it returns the {@link Error.displayHeading} value.
  *                        - If the value is a `string` it is returned as it is.
  *                        - If no value is provided then the default value is returned.
  * @param defaultHeading  The value to decode if no `err` argument is provided.
@@ -89,7 +89,7 @@ export function isErrorResult(arg: any, code?: ErrorCode | null): arg is [null, 
 }
 
 /**
- * If the provided error has the `ErrorGroup` code, then the {@link Error#childErrors} property will be returned.
+ * If the provided error has the `ErrorGroup` code, then the {@link Error.childErrors} property will be returned.
  * Otherwise, an array containing the provided error as the only item will be returned.
  * Useful when you have to deal with errors which can be groups but also non-groups, 
  * in order to simplify the error checking code.

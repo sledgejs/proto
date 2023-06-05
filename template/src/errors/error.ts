@@ -60,14 +60,14 @@ export class Error {
 
   /**
    * The message that should be shown to developers, in consoles, logs, etc.
-   * If, when initializing, no {@link Error#displayMessage} has been set,
+   * If, when initializing, no {@link Error.displayMessage} has been set,
    * then the display message will also be set to use this message.
    */
   readonly message: string;
   
   /**
    * The message that should be shown to users. If no value is provided then
-   * the value set for {@link IError#message} will be used.
+   * the value set for {@link IError.message} will be used.
    */
   readonly displayMessage: string;
   
@@ -80,7 +80,7 @@ export class Error {
   /**
    * The object on which this Error will be based.
    * Can be an API response object, a response string, a native Error instance, etc.
-   * If the source object is also an {@link Error} object, use {@link Error#innerError} instead.
+   * If the source object is also an {@link Error} object, use {@link Error.innerError} instead.
    */
   readonly source: any | null = null;
   
@@ -88,7 +88,7 @@ export class Error {
    * Used when the {@link Error} to be instanced is based on another {@link Error} 
    * and you want to keep track of the original error.
    * If the object on which this error is based is not an instance of {@link Error},
-   * but it is of another type, use {@link Error#source} instead.
+   * but it is of another type, use {@link Error.source} instead.
    */
   readonly innerError: Error | null = null;
   

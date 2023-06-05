@@ -1,9 +1,8 @@
 import { Config } from '../../config/config';
 import { getNowSeconds } from '../../core/dateTimeUtils';
-import { isDefinedObject, isFiniteNumber, isNonEmptyString } from '../../core/typeUtils';
+import { isDefinedObject, isNonEmptyString } from '../../core/typeUtils';
 import { Maybe, MaybeProps } from '../../core/types';
 import { LoginInput } from './authInputSchema';
-import { AuthTokenPayload } from './authSchema';
 
 const AuthConfig = Config.auth;
 const TokenExpiryDelta = AuthConfig.tokenExpiryDelta; // in milliseconds

@@ -3,7 +3,7 @@ import nth from 'lodash/nth';
 import { RouteAction, RouteContext, RouteType, RouteVisit } from '../../routes/routeSchema';
 import { ServiceBase } from '../serviceBase';
 import { ServiceName } from '../serviceSchema';
-import { AuthFlowName, AuthFlowResponse, AuthFlowResponseType } from '../auth/authSchema';
+import { AuthFlowResponse, AuthFlowResponseType } from '../auth/authSchema';
 import { Routes } from '../../routes/routes';
 import { getRelativeUrl } from '../../core/urlUtils';
 
@@ -12,11 +12,16 @@ import type { Kernel } from '../../kernel/kernel';
 import { HistoryManager } from './historyManager';
 import { StorageManager } from './storageManager';
 import { action } from 'mobx';
-import { Result } from '../../core/types';
 
+/**
+ * Service which manages routing-related operations for the application.
+ */
 export class RoutingService
   extends ServiceBase {
 
+  /**
+   * Creates a new instance of {@link RoutingService}.
+   */
   constructor(kernel: Kernel) {
     super(kernel);
 
@@ -24,48 +29,82 @@ export class RoutingService
     trace(this);
   }
 
+  /** @inheritDoc ServiceBase.serviceName */
   readonly serviceName = ServiceName.Routing;
 
+  /**
+   * Reference to the {@link StorageManager} set on the current instance.
+   */
   readonly storage = new StorageManager(this.kernel);
+  
+  /**
+   * Reference to the {@link HistoryManager} set on the current instance.
+   */
   readonly history = new HistoryManager(this.kernel);
 
-  get contextHistory(): RouteContext[] {
-    return this.history.contextHistory;
-  }
-
-  get visitHistory(): RouteVisit[] {
-    return this.history.visitHistory;
-  }
-
+  /**
+   * Returns the last {@link RouteContext} in the history which is for a 
+   * {@link RouteType.Direct} route or `null` if none exists.
+   */
   get lastDirectRoute(): RouteContext | null {
     return this.findVisitContext(ctx => ctx.descriptor.routeType === RouteType.Direct, -1);
   }
 
+  /**
+   * Returns the last {@link RouteContext} in the history which is for a 
+   * {@link RouteType.Auth} route or `null` if none exists.
+   */
   get lastAuthRoute(): RouteContext | null {
     return this.findVisitContext(ctx => ctx.descriptor.routeType === RouteType.Auth, -1);
   }
 
+  /**
+   * Returns the last {@link RouteContext} in the history which is for a 
+   * {@link RouteType.Private} route or `null` if none exists.
+   */
   get lastPrivateRoute(): RouteContext | null {
     return this.findVisitContext(ctx => ctx.descriptor.routeType === RouteType.Private, -1);
   }
 
+  /**
+   * Returns the last {@link RouteContext} in the history which is for a 
+   * {@link RouteType.Public} route or `null` if none exists.
+   */
   get lastPublicRoute(): RouteContext | null {
     return this.findVisitContext(ctx => ctx.descriptor.routeType === RouteType.Public, -1);
   }
 
+  /**
+   * Returns the last {@link RouteContext} in the history which is for a 
+   * {@link RouteType.Public} or {@link RouteType.Private} route or `null` if none exists.
+   */
   get lastContentRoute(): RouteContext | null {
     return this.findVisitContext(ctx =>
       ctx.descriptor.routeType === RouteType.Private ||
       ctx.descriptor.routeType === RouteType.Public, -1);
   }
 
+  private get visitHistory(): RouteVisit[] {
+    return this.history.visitHistory;
+  }
+
+  /**
+   * Registers a new visit to the history.
+   * @see {@link HistoryManager.registerVisit}
+   */
   registerVisit(location: Location, action: RouteAction) {
     return this.history.registerVisit(location, action);
   }
 
-  getRedirectRouteFromAuthFlowResponse(resp: AuthFlowResponse): string | null {
+  /**
+   * Interprets an {@link AuthFlowResponse} and returns the route to redirect to,
+   * or `null` if the response does not require a redirect.
+   * 
+   * @param response The response to interpret.
+   */
+  getRedirectRouteFromAuthFlowResponse(response: AuthFlowResponse): string | null {
 
-    switch (resp.responseType) {
+    switch (response.responseType) {
       case AuthFlowResponseType.RedirectToLoginPage:
         return Routes.login();
 
@@ -96,16 +135,31 @@ export class RoutingService
     return null;
   }
 
-  executeAuthFlowResponse(resp: AuthFlowResponse): void {
-    const route = this.getRedirectRouteFromAuthFlowResponse(resp);
+  /**
+   * Interprets an {@link AuthFlowResponse} and redirects the page to the 
+   * resulting route if the response requires a redirect.
+   * 
+   * @param response The response to interpret.
+   */
+  executeAuthFlowResponse(response: AuthFlowResponse): void {
+    const route = this.getRedirectRouteFromAuthFlowResponse(response);
     if (route)
       window.history.pushState(null, '', route);
   }
   
+  /**
+   * Navigates to a new route programatically.
+   * 
+   * @param response The response to interpret.
+   */
   navigate(route: string, data: any = null) {
     window.history.pushState(null, '', route);
   }
 
+  /**
+   * Clears the storage associated with routing.
+   * @see {@link StorageManager.clear}
+   */
   @action
   clearStorage() {
     return this.storage.clear();

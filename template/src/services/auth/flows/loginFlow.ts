@@ -1,13 +1,14 @@
 import { action } from 'mobx';
 import type { AsyncResult } from '../../../core/types';
-import { AuthFlowName, type AuthFlowResponse } from '../authSchema';
+import { AuthFlowName, IAuthFlow, type AuthFlowResponse } from '../authSchema';
 import type { LoginInput } from '../authInputSchema';
 import { BaseAuthFlow } from './baseAuthFlow';
 
 import { trace } from '../../../dev';
 
 export class LoginFlow
-  extends BaseAuthFlow {
+  extends BaseAuthFlow
+  implements IAuthFlow {
 
   readonly flowName = AuthFlowName.Login;
 

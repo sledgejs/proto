@@ -10,66 +10,100 @@ import { AuthState } from './authState';
 import { AuthStateType } from './authSchema';
 
 /**
- * Exposes methods for setting and querying the authorization state which is kept in localStorage.
- * The purpose of this object is to keep the minimally required information in order
- * to prevent unnecessary requests to Auth0 in order to check if the user is still 
- * authenticated or not, or if a token needs to be refreshed or not.
- * The only type of information allowed to be stored is token expiry timestamps 
- * and simple flags regarding the current session status.
- * Keeping actual tokens in localStorage should be avoided.
+ * Stores the current {@link AuthState} of the application and exposes
+ * methods for pushing new states and listening for updates on the state
+ * through various means.
+ * There should always be an {@link AuthState} set.
  */
 export class AuthStateManager
   extends Node {
 
+  /**
+   * Creates a new instance of the {@link AuthStateManager} class.
+   */
   constructor(kernel: Kernel) {
     super(kernel);
     makeObservable(this);
 
     initDev(this, { color: 'blueviolet' });
     trace(this);
+
+    this.state = new AuthState({ 
+      type: AuthStateType.Unauthorized 
+    });
   }
 
-  @observable state = new AuthState({ type: AuthStateType.Unauthorized });
+  /**
+   * The current {@link AuthState} set for the application.
+   */
+  @observable state: AuthState;
 
+  /**
+   * Shortcut for accessing the current {@link AuthContext} 
+   * using {@link AuthState.context | AuthState.context}.
+   */
   @computed get context(): AuthContext | null {
     return this.state.context;
   }
 
   private readonly stateIterableRelay = new AsyncIterableRelay<AuthState>();
+  
+  /**
+   * An {@link AsyncIterable} instance which yields a new {@link AuthState} 
+   * each time one is pushed to the application. 
+   */
   get stateIterable(): AsyncIterable<AuthState> {
     return this.stateIterableRelay.iterable;
   }
 
   /**
-   * Returns the current context as it is, without checking if it's valid 
-   * or syncing it with the storage. 
-   * Use this when you want to check the current state of the context yourself.
+   * Gets the current {@link AuthContext}.
+   * Identical to {@link AuthStateManager.context}, but traces the call in development mode.
    */
   getContext() {
-    trace(this, `getContext()`, this.context);
+    trace(this, this.context);
     return this.context;
   }
 
-  pushAuthorizedState(context: AuthContext) {
+  /**
+   * Pushes a new {@link AuthState} of the {@link AuthStateType.Authorized} type.
+   * @param context The {@link AuthContext} to be set on the new instance.
+   */
+  pushAuthorizedState(context: AuthContext): void {
     this.state = new AuthState({
       type: AuthStateType.Authorized,
       context
     });
   }
 
-  pushUnauthorizedState() {
+  /**
+   * Pushes a new {@link AuthState} of the {@link AuthStateType.Unauthorized} type.
+   */
+  pushUnauthorizedState(): void {
     this.state = new AuthState({
       type: AuthStateType.Unauthorized
     });
   }
 
-  pushAuthorizingState(transientPermit: AuthPermit | null = null) {
+  /**
+   * Pushes a new {@link AuthState} of the {@link AuthStateType.Authorizing} type.
+   * @param transientPermit The {@link AuthPermit} to be set as the transient permit
+   *                        on the new instance, which will probably be used to fetch
+   *                        the {@link UserIdentity} from the API. 
+   */
+  pushAuthorizingState(transientPermit: AuthPermit | null = null): void {
     this.state = new AuthState({
       type: AuthStateType.Authorizing,
       transientPermit
     });
   }
 
+  /**
+   * Returns a Promise that will resolve once a new {@link AuthState} 
+   * is pushed to the current application.
+   * @param typeFilter  A filter which will make the Promise resolve only for states 
+   *                    that match the specified {@link AuthStateType}
+   */
   async waitForNextState(typeFilter: Iterable<AuthStateType> | null = null) {
     trace(this);
 

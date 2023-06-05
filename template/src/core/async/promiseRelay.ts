@@ -77,7 +77,7 @@ export class PromiseRelay<T, TError = any> {
 	private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   /**
-   * Starts the timeout clock, if a {@link PromiseRelayProps#timeout | timeout} has been provided.
+   * Starts the timeout clock, if a {@link PromiseRelayProps.timeout | timeout} has been provided.
    */
 	start() {
 		const { timeout } = this;

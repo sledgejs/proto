@@ -10,7 +10,7 @@ import type { IAuthFlow } from './authSchema';
 import { trace } from '../../dev';
 
 /**
- * Service for managing authentication and authorization for the application.
+ * Service which manages authentication and authorization for the application.
  */
 export class AuthService
   extends ServiceBase {

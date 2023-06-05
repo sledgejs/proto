@@ -132,14 +132,14 @@ export class Kernel
   }
 
   /**
-   * Shortcut for {@link ServiceLoader#name}.
+   * Shortcut for {@link ServiceLoader.name}.
    */
   getService<T extends ServiceName>(name: T): Service[T] | null {
     return this.serviceLoader.get(name);
   }
 
   /**
-   * Shortcut for {@link ServiceLoader#name}.
+   * Shortcut for {@link ServiceLoader.name}.
    */
   loadService<T extends ServiceName>(name: T): Promise<Service[T]> {
     return this.serviceLoader.load(name);

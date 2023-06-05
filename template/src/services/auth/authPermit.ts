@@ -23,15 +23,11 @@ type AuthPermitPreparedData = {
 
 
 /**
- * Represents a response from the Auth provider which guarantees that the tokens
- * have been properly obtained, they are valid and the state data has been properly read.
- * This enables a transactional response from the Auth provider in which the authorization
- * either fails or succeeds, without having to deal with partially corrupted data or transient states.
- * ---
- * **NOTE**:  In a real authorization flow, this permit is half of the process, 
- *            with the other half being the fetching of the `UserProfile` object.
- *            See `AuthContext` for the complete object which underlies a fully authorized state.
- * ---
+ * Container for the tokens obtained for the current authenticated state.
+ * This object only represents a partially authenticated state, since a fully authenticated
+ * state also requires a {@link UserIdentity}.
+ * 
+ * @remark
  * This object is immutable using `Object.freeze`.
  */
 export class AuthPermit {
@@ -42,12 +38,12 @@ export class AuthPermit {
    * Creates a new instance of AuthPermit.
    * The data object needs to have been validated using `isAuthPermitDataValid`, otherwise an `AssertionError` is thrown.
    * Use `tryCreateAuthPermit` if you're not sure about the data validity.
-   * @param data  The data based on which to create the permit.
+   * @param data The validated data with which to create the permit.
    * @throws {AssertionError}
    */
   private constructor(data: AuthPermitPreparedData) {
 
-    this.id = (AuthPermit.IdCursor++).toString();
+    this.permitId = (AuthPermit.IdCursor++).toString();
 
     this.token = data.token;
     this.tokenExpires = data.tokenPayload.exp;
@@ -58,6 +54,10 @@ export class AuthPermit {
     Object.freeze(this.tokenPayload);
   }
 
+  /**
+   * Creates a new instance of AuthPermit or returns an error if the data is invalid.
+   * @param data  The data with which to create the permit.
+   */
   static create(data: AuthPermitData): Result<AuthPermit> {
 
     const [preparedData, err] = prepareAuthPermitData(data);
@@ -68,22 +68,39 @@ export class AuthPermit {
     return [permit];
   }
 
-  readonly id: string;
+  readonly permitId: string;
+  
+  /**
+   * The sample JWT token of the permit.
+   * @remark
+   * Since this is only a sample implementation, in real-life scenarios
+   * there would be multiple tokens defined (ID token, access token, refresh token).
+   */
   readonly token: string;
+
+  /**
+   * The expiration timestamp, in milliseconds, of the sample JWT token.
+   */
   readonly tokenExpires: number;
+
+  /**
+   * The sample payload of the sample JWT token.
+   */
   readonly tokenPayload: AuthTokenPayload;
 
+  /**
+   * Returns `true` if the current sample token is still valid (not expired).
+   */
   get isTokenValid() {
     return isTokenValid(this.tokenExpires);
   }
 
+  /**
+   * Returns `true` if the permit is still valid (no token has expired).
+   */
   get isValid() {
     return this.isTokenValid;
   }
-}
-
-export function createAuthPermit(data: AuthPermitData): Result<AuthPermit> {
-  return AuthPermit.create(data);
 }
 
 function prepareAuthPermitData(data: AuthPermitData): Result<AuthPermitPreparedData> {

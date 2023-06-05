@@ -39,7 +39,7 @@ type Params<T> = RunApiRequestParams<T>;
  * Runs an API request using the provided parameters.
  * The purpose of this helper is to handle all shared operations regarding authorization,
  * network connectivity, parameters and result decoding, and only delegate to the 
- * {@link RunApiRequestParams#executor} function the actual custom logic of the request.
+ * {@link RunApiRequestParams.executor} function the actual custom logic of the request.
  * 
  * @param params The parameters to use for the request.
  * @typeParam T The type of the data returned by the request.

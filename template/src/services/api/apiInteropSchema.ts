@@ -21,8 +21,8 @@ export interface IApiRequestAuthMediator {
   getContext(): AuthContext | null;
 
   /**
-   * Returns a Promise that will resolve once a new `AuthState` is pushed to
-   * the current mediated environment.
+   * Returns a Promise that will resolve once a new `AuthState` 
+   * is pushed to the current mediated environment.
    * @param typeFilter  A filter which will make the Promise resolve only for states 
    *                    that match the specified {@link AuthStateType}
    */

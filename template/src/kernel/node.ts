@@ -15,12 +15,16 @@ export interface Node
 export class Node
   implements DevAnnotatedObject {
 
+  /**
+   * Creates a new instance of the {@link Node} class.
+   * @param kernel The {@link Kernel} to be referenced by this `Node`.
+   */
   constructor(kernel: Kernel) {
     this.kernel = kernel;
   }
 
   /**
-   * The reference to the {@link Kernel} to which this Node is attached.
+   *  The {@link Kernel} which is referenced by this `Node`.
    */
   readonly kernel: Kernel;
 
