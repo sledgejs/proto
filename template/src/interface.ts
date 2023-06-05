@@ -60,4 +60,23 @@ export type { PrivateRouteFlow } from './services/auth/flows/privateRouteFlow';
 export type { PublicRouteFlow } from './services/auth/flows/publicRouteFlow';
 // #endregion
 
+// #region services.routing
+export type { RoutingService } from './services/routing/routingService';
+export type { HistoryManager } from './services/routing/historyManager';
+export type { StorageManager } from './services/routing/storageManager';
+
+// #endregion
+
+// #region services.notification
+export type { NotificationService } from './services/notification/notificationService';
+export type { Notification } from './services/notification/notification';
+export type { NotificationType } from './services/notification/notificationSchema';
+
+// #endregion
+
+// #region services.resource
+export type { ResourceService } from './services/resource/resourceService';
+export type { LoadResourceInjectPoint, LoadResourceOptions } from './services/resource/resourceSchema';
+// #endregion
+
 export type { ServiceBase } from './services/serviceBase';

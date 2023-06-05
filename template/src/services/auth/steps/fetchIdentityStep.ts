@@ -8,7 +8,7 @@ import { AuthFetchIdentityStepQuery, User } from '../../../.generated/graphql';
 import { ApiRequestAuthMode } from '../../api/apiSchema';
 import { GraphQlQueryParams } from '../../api/graphQlSchema';
 import { ErrorCode } from '../../../errors/errorCode';
-import { EntityData } from '../../../data/entitySchema';
+import { EntitySource } from '../../../data/entitySchema';
 
 type Params = {
   orchestrator: AuthOrchestrator;
@@ -49,7 +49,7 @@ export async function runFetchIdentityStep(params: Params): AsyncResult<UserIden
 
   const [res, err] = await kernel.apiService.runQuery<AuthFetchIdentityStepQuery>(reqOpts);
 
-  const resObj = res?.getIdentity as EntityData<User>;
+  const resObj = res?.getIdentity as EntitySource<User>;
 
   if (err || !resObj) {
     return [null, new Error('Auth.FetchIdentityError', {

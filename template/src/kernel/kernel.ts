@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { Config } from '../config/config';
 import { ServiceLoader } from '../services/serviceLoader';
-import { Service, ServiceName } from '../services/serviceSchema';
+import { ServiceLookup, ServiceName } from '../services/serviceSchema';
 import { Node } from './node';
 
 import { ApiService } from '../services/api/apiService';
@@ -134,14 +134,14 @@ export class Kernel
   /**
    * Shortcut for {@link ServiceLoader.name}.
    */
-  getService<T extends ServiceName>(name: T): Service[T] | null {
+  getService<T extends ServiceName>(name: T): ServiceLookup[T] | null {
     return this.serviceLoader.get(name);
   }
 
   /**
    * Shortcut for {@link ServiceLoader.name}.
    */
-  loadService<T extends ServiceName>(name: T): Promise<Service[T]> {
+  loadService<T extends ServiceName>(name: T): Promise<ServiceLookup[T]> {
     return this.serviceLoader.load(name);
   }
 

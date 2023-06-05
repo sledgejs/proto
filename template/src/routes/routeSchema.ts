@@ -1,6 +1,5 @@
 import { ReactElement } from 'react';
 import { Location } from 'react-router-dom';
-import { AuthFlowName } from '../services/auth/authSchema';
 
 export enum RouteType {
   Auth = 'Auth',

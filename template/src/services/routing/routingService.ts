@@ -1,17 +1,19 @@
 import { Location } from 'react-router-dom';
+import { action } from 'mobx';
 import nth from 'lodash/nth';
-import { RouteAction, RouteContext, RouteType, RouteVisit } from '../../routes/routeSchema';
+import { RouteAction, type RouteContext, RouteType, type RouteVisit } from '../../routes/routeSchema';
 import { ServiceBase } from '../serviceBase';
 import { ServiceName } from '../serviceSchema';
-import { AuthFlowResponse, AuthFlowResponseType } from '../auth/authSchema';
+import { type AuthFlowResponse, AuthFlowResponseType } from '../auth/authSchema';
 import { Routes } from '../../routes/routes';
 import { getRelativeUrl } from '../../core/urlUtils';
 
-import { initDev, trace } from '../../dev';
-import type { Kernel } from '../../kernel/kernel';
 import { HistoryManager } from './historyManager';
 import { StorageManager } from './storageManager';
-import { action } from 'mobx';
+
+import type { Kernel } from '../../kernel/kernel';
+
+import { initDev, trace } from '../../dev';
 
 /**
  * Service which manages routing-related operations for the application.

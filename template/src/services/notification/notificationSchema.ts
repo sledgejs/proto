@@ -1,3 +1,7 @@
+/**
+ * The type of the notification to display to the user.
+ * Controls the styling, scope and duration of the notification.
+ */
 export enum NotificationType {
   Default = 'Default',
   Error = 'Error',
@@ -5,12 +9,4 @@ export enum NotificationType {
   Success = 'Success',
   Info = 'Info',
   Loading = 'Loading'
-}
-
-export interface INotification {
-  id: string;
-  duration: number;
-  title: string;
-  content: string;
-  type: NotificationType;
 }

@@ -1,36 +1,47 @@
 import { observable } from 'mobx';
 import type { AsyncResult } from '../core/types';
+import { Node } from '../kernel/node';
 import { AsyncLoader } from '../core/async/asyncLoader';
 import { Error } from '../errors/error';
 import { ErrorCode } from '../errors/errorCode';
 import { Kernel } from '../kernel/kernel';
-import { IService, Service, ServiceName } from './serviceSchema';
+import { IService, ServiceLookup, ServiceName } from './serviceSchema';
 
-export class ServiceLoader {
+/**
+ * Manages loading and retrieving of services.
+ */
+export class ServiceLoader
+  extends Node {
 
+  /**
+   * Creates a new instance of {@link ServiceLoader}.
+   */
   constructor(kernel: Kernel) {
-    this.kernel = kernel;
+    super(kernel);
   }
-
-  readonly kernel: Kernel;
 
   private readonly loaders = observable.map<ServiceName, AsyncLoader>();
   private readonly services = observable.map<ServiceName, any>();
 
   /**
    * Gets a service by name or `null` if the service is dynamically loaded and hasn't been loaded yet.
-   * 
    * For dynamically loaded services use {@link ServiceLoader.load} 
    * if you want to get a `Promise` that resolves when the service has been loaded.
    * 
-   * @param name The qualified name of the service you want to load
-   * @returns
+   * @param name The qualified name of the service you want to get.
    */
-  get<T extends ServiceName>(name: T): Service[T] | null {
+  get<T extends ServiceName>(name: T): ServiceLookup[T] | null {
     return this.services.get(name) ?? null;
   }
 
-  async load<T extends ServiceName>(name: T): Promise<Service[T]> {
+  /**
+   * Loads a service if it hasn't been loaded yet.
+   * If the service is already being loaded or it has been already loaded, the returned
+   * Promise will resolve when the primary call resolves.
+   * 
+   * @param name The qualified name of the service you want to load.
+   */
+  async load<T extends ServiceName>(name: T): Promise<ServiceLookup[T]> {
 
     const { services } = this;
     if (services.has(name))

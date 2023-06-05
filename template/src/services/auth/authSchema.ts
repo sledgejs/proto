@@ -74,7 +74,7 @@ export enum AuthStateType {
 }
 
 /** 
- * Qualified name for all implementations of `IAuthFlow` in the application.
+ * Qualified name for all authentication flows in the application.
  */
 export enum AuthFlowName {
   AuthRoute = 'AuthRoute',

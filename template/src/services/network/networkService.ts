@@ -9,6 +9,9 @@ import { ServiceName } from '../serviceSchema';
 export class NetworkService
   extends ServiceBase {
 
+  /**
+   * Creates a new instance of {@link NetworkService}.
+   */
   constructor(kernel: Kernel) {
     super(kernel);
     makeObservable(this);

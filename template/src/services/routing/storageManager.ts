@@ -9,27 +9,45 @@ const ModuleConfig = ServiceConfig.storage;
 
 const LastPrivatePathKey = ModuleConfig.lastPrivatePathKey;
 
+/**
+ * Manages the routing storage for the {@link RoutingService}.
+ */
 export class StorageManager
   extends Node
   implements IRouteStorage {
 
+  /**
+   * Creates a new instance of {@link StorageManager}.
+   */
   constructor(kernel: Kernel) {
     super(kernel);
     this.load();
   }
 
+  /**
+   * Stores the last private path that was visited by the user.
+   */
   lastPrivatePath: string | null = null;
 
+  /**
+   * Sets the last private path that was visited by the user.
+   */
   setLastPrivatePath(path: string) {
     this.lastPrivatePath = path;
     this.sync();
   }
 
+  /**
+   * Clears the last private path that was visited by the user.
+   */
   clearLastPrivateRoute(path: string) {
     this.lastPrivatePath = null;
     this.sync();
   }
 
+  /**
+   * Clears all values from storage.
+   */
   clear() {
     this.lastPrivatePath = null;
     this.sync();

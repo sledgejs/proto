@@ -7,9 +7,15 @@ import { Node } from '../../kernel/node';
 import { RouteLookup } from '../../routes/routeLookup';
 import { RouteAction, RouteContext, RouteDescriptor, RouteVisit } from '../../routes/routeSchema';
 
+/**
+ * Manages the routing history for the {@link RoutingService}.
+ */
 export class HistoryManager
   extends Node {
 
+  /**
+   * Creates a new instance of {@link HistoryManager}.
+   */
   constructor(kernel: Kernel) {
     super(kernel);
 
@@ -31,16 +37,39 @@ export class HistoryManager
     this.pageContext = this.context;
   }
 
-  readonly lookup = RouteLookup;
+  private readonly lookup = RouteLookup;
+  
+  /**
+   * The list of {@link RouteContext} objects, including the current one.
+   * This list can be modified freely depending on the {@link RouteAction}
+   * used to register new visits.
+   */
   readonly contextHistory: RouteContext[] = [];
+
+  /**
+   * The list of {@link RouteVisit} objects, including the current one.
+   * This list is always growing, regardless of the {@link RouteAction}
+   * used to register new visits.
+   */
   readonly visitHistory: RouteVisit[] = [];
 
+  /**
+   * Gets the {@link RouteContext} representing the initial visit.
+   */
   readonly pageContext: RouteContext;
 
+  /**
+   * Gets the current {@link RouteContext} representing the current route.
+   */
   get context(): RouteContext {
     return last(this.contextHistory) ?? this.pageContext;
   }
 
+  /**
+   * Registers a new visit and adds it to the history.
+   * @param location  The `react-router-dom` `Location` object based on which to create the visit.
+   * @param action    Specifies how the `RouteVisit` should be added (pushed, popped or replaced).
+   */
   registerVisit(location: Location, action: RouteAction) {
     const { contextHistory, visitHistory } = this;
 

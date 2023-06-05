@@ -11,61 +11,76 @@ import { DefaultLoadResourceOptions, LoadResourceInjectPoint, LoadResourceOption
  * Manages dynamic loading of scripts, stylesheets and other types of resources. 
  */
 export class ResourceService
-	extends ServiceBase {
+  extends ServiceBase {
 
-	constructor(kernel: Kernel) {
-		super(kernel);
+  /**
+   * Creates a new instance of {@link ResourceService}.
+   */
+  constructor(kernel: Kernel) {
+    super(kernel);
 
-		initDev(this, { color: 'green' });
-		trace(this);
-	}
+    initDev(this, { color: 'green' });
+    trace(this);
+  }
 
+  /** @inheritDoc ServiceBase.serviceName */
   readonly serviceName = ServiceName.Resource;
 
-	async loadScript(url: string, opts: LoadResourceOptions = DefaultLoadResourceOptions): AsyncResult<HTMLScriptElement> {
+  /**
+   * Loads and injects a script into the web page.
+   * 
+   * @param url  The URL of the script to load.
+   * @param opts The options to provide to this method.
+   */
+  async loadScript(url: string, opts: LoadResourceOptions = DefaultLoadResourceOptions): AsyncResult<HTMLScriptElement> {
 
-		const script = document.createElement('script');
+    const script = document.createElement('script');
 
-		const scriptPromise = new Promise<any>((res, rej) => {
-			script.addEventListener('load', () => {
-				res(null);
-			});
+    const scriptPromise = new Promise<any>((res, rej) => {
+      script.addEventListener('load', () => {
+        res(null);
+      });
 
-			script.addEventListener('error', (errEvt) => {
-				rej(errEvt.error);
-			});
-		});
+      script.addEventListener('error', (errEvt) => {
+        rej(errEvt.error);
+      });
+    });
 
-		script.type = 'text/javascript';
-		script.async = true;
-		script.src = url;
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = url;
 
-		switch (opts?.injectPoint) {
+    switch (opts?.injectPoint) {
 
-			case LoadResourceInjectPoint.HeadStart:
-				document.head.prepend(script);
-				break;
-			case LoadResourceInjectPoint.HeadEnd:
-				document.head.append(script);
-				break;
+      case LoadResourceInjectPoint.HeadStart:
+        document.head.prepend(script);
+        break;
+      case LoadResourceInjectPoint.HeadEnd:
+        document.head.append(script);
+        break;
 
-			case LoadResourceInjectPoint.BodyStart:
-				document.body.prepend(script);
-				break;
+      case LoadResourceInjectPoint.BodyStart:
+        document.body.prepend(script);
+        break;
 
-			default:
-			case LoadResourceInjectPoint.BodyEnd:
-				document.body.append(script);
-				break;
-		}
+      default:
+      case LoadResourceInjectPoint.BodyEnd:
+        document.body.append(script);
+        break;
+    }
 
-		try {
-			await scriptPromise;
-		}
-		catch (err) {
-			return [null, new Error('Resources.LoadScriptFailed')];
-		}
+    try {
+      await scriptPromise;
+    }
+    catch (err) {
+      return [null, new Error('Resources.LoadScriptFailed')];
+    }
 
-		return [script];
-	}
+    // TODO: test
+    const { callback } = opts;
+    if (callback)
+      callback();
+
+    return [script];
+  }
 }
