@@ -17,7 +17,16 @@ export class ServiceLoader {
   private readonly loaders = observable.map<ServiceName, AsyncLoader>();
   private readonly services = observable.map<ServiceName, any>();
 
-  get<T extends ServiceName>(name: T): Service[T] {
+  /**
+   * Gets a service by name or `null` if the service is dynamically loaded and hasn't been loaded yet.
+   * 
+   * For dynamically loaded services use {@link ServiceLoader#load} 
+   * if you want to get a `Promise` that resolves when the service has been loaded.
+   * 
+   * @param name The qualified name of the service you want to load
+   * @returns
+   */
+  get<T extends ServiceName>(name: T): Service[T] | null {
     return this.services.get(name) ?? null;
   }
 

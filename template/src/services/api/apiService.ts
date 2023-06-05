@@ -27,7 +27,6 @@ export class ApiService
 
   readonly serviceName = ServiceName.Api;
 
-  
   constructor(kernel: Kernel) {
     super(kernel);
 
@@ -39,28 +38,21 @@ export class ApiService
     this.runAuthStateSyncLoop();
   }
 
-
-  private async runAuthStateSyncLoop() {
-    const { stateManager } = this.kernel.authService;
-    for await (const state of stateManager.stateIterable) {
-      this.createApolloClient();
-    }
-  }
-
+  /**
+   * Reference to the Apollo cache instance.
+   */
   cache: InMemoryCache;
 
+  /**
+   * Reference to the Apollo client instance.
+   */
   client: ApolloClient<NormalizedCacheObject>;
 
-  private createApolloCache() {
-
-    const cacheConfig: InMemoryCacheConfig = {
-
-    }
-
-    const cache = new InMemoryCache(cacheConfig);
-    return cache;
-  }
-
+  /**
+   * Returns true if subscriptions can be used.
+   * In the current implementation this means that the service is authorized
+   * and a token has been set.
+   */
   get canUseSubscriptions() {
     return !!this.token;
   }
@@ -75,6 +67,23 @@ export class ApiService
       return token;
 
     return null;
+  }
+
+  private async runAuthStateSyncLoop() {
+    const { stateManager } = this.kernel.authService;
+    for await (const state of stateManager.stateIterable) {
+      this.createApolloClient();
+    }
+  }
+
+  private createApolloCache() {
+
+    const cacheConfig: InMemoryCacheConfig = {
+
+    }
+
+    const cache = new InMemoryCache(cacheConfig);
+    return cache;
   }
 
   private createApolloLink(): ApolloLink {
@@ -105,7 +114,7 @@ export class ApiService
     return splitLink;
   }
 
-  createApolloClient() {
+  private createApolloClient() {
 
     const cache = this.cache;
     const link = this.createApolloLink();

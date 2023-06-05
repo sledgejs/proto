@@ -19,6 +19,7 @@ export type DevOptions = {
 }
 
 export interface DevAnnotatedObject {
+  /** @hidden */
   _dev?: DevState;
 }
 

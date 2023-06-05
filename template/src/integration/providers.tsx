@@ -42,7 +42,7 @@ export const Providers = ({
   providers = (
     <KernelProvider 
       value={kernel} 
-      key={kernel.id}>
+      key={kernel.kernelId}>
       
       {children}
     </KernelProvider>
