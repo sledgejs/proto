@@ -1,10 +1,13 @@
 import { Dayjs } from 'dayjs';
-import { ChangeEvent, MouseEvent, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { ObservableRef } from '../../core/observableRef';
 import { DateTimeInterval, NumberInterval } from '../../core/types';
 import { Error } from '../../errors/error';
 import { InputState } from './inputState';
 
+/**
+ * Describes the current validation status of an input.
+ */
 export enum InputStatus {
   None = 'None',
   Success = 'Success',
@@ -12,6 +15,9 @@ export enum InputStatus {
   Error = 'Error'
 }
 
+/**
+ * Standardizes all actions that can occur on an input.
+ */
 export enum InputAction {
   Init = 'Init',
   Mount = 'Mount',
@@ -27,6 +33,14 @@ export enum InputAction {
   Submit = 'Submit'
 }
 
+/**
+ * Describes types of inputs based on their behaviors.
+ * The purpose of this is to be able to have multiple inputs which might
+ * differ in appearance but have the same behavior, and also to be
+ * able to have a single {@link InputState} object for all inputs.
+ * This list is built upon the inputs in WAI-ARIA Roles list.
+ * @see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles
+ */
 export enum InputRole {
   Button = 'Button',
   CheckBox = 'CheckBox',
@@ -41,15 +55,13 @@ export enum InputRole {
   Slider = 'Slider',
   DateTimeRangePicker = 'DateRangePicker',
   DateTimePicker = 'DatePicker',
+  NumberRangePicker = 'NumberRangePicker',
   ToggleGroup = 'ToggleGroup'
 }
 
-export type InputHook =
-  (state: InputState, action: InputAction) => Partial<InputHookObject> | null | undefined;
-
-export type InputImperativeHook =
-  (state: InputState, action: InputAction) => void;
-
+/**
+ * Describes the changes to apply to an input state through an {@link InputHook}.
+ */
 export type InputHookObject = {
   label?: ReactNode | null;
   error?: ReactNode | Error | null;
@@ -60,6 +72,27 @@ export type InputHookObject = {
   showMessage?: boolean | null;
 }
 
+/**
+ * A function which gets called each time the state of an input changes
+ * and can return updates to be applied to the state.
+ * 
+ * @param state   The input state which was changed
+ * @param action  The type of action that caused the input state to change
+ */
+export type InputHook =
+  (state: InputState, action: InputAction) => Partial<InputHookObject> | null | undefined;
+
+/**
+ * A function which gets called each time the state of an input changes
+ * in order to execute custom behavior and not update the state.
+ * 
+ * @param state   The input state which was changed
+ * @param action  The type of action that caused the input state to change
+ */
+export type InputImperativeHook =
+  (state: InputState, action: InputAction) => void;
+
+
 export type DateRangeChangeEvent = {
   value: DateTimeInterval;
 }
@@ -68,14 +101,29 @@ export type NumberRangeChangeEvent = {
   value: NumberInterval;
 }
 
-export type TextFieldChangeEventHandler = (evt: React.ChangeEvent<HTMLInputElement>, state: InputState) => void;
-export type DateRangeChangeEventHandler = (evt: DateRangeChangeEvent, state: InputState) => void;
-export type NumberRangeChangeEventHandler = (evt: NumberRangeChangeEvent, state: InputState) => void;
-export type CheckboxGroupChangeEventHandler = (val: Set<string>, state: InputState) => void;
-export type RadioGroupChangeEventHandler = (val: string, state: InputState) => void;
-export type ChangeEventHandler = (evt: React.ChangeEvent | React.PointerEvent | React.MouseEvent, state: InputState) => void;
-export type FocusEventHandler = (evt: React.FocusEvent, state: InputState) => void;
-export type PointerEventHandler = (evt: React.PointerEvent, state: InputState) => void;
+export type TextFieldChangeEventHandler = 
+  (evt: React.ChangeEvent<HTMLInputElement>, state: InputState) => void;
+  
+export type DateRangeChangeEventHandler = 
+  (evt: DateRangeChangeEvent, state: InputState) => void;
+
+export type NumberRangeChangeEventHandler = 
+  (evt: NumberRangeChangeEvent, state: InputState) => void;
+
+export type CheckboxGroupChangeEventHandler = 
+  (val: Set<string>, state: InputState) => void;
+
+export type RadioGroupChangeEventHandler = 
+  (val: string, state: InputState) => void;
+
+export type ChangeEventHandler = 
+  (evt: React.ChangeEvent | React.PointerEvent | React.MouseEvent, state: InputState) => void;
+
+export type FocusEventHandler = 
+  (evt: React.FocusEvent, state: InputState) => void;
+
+export type PointerEventHandler = 
+  (evt: React.PointerEvent, state: InputState) => void;
 
 export enum CheckBoxValue {
   Checked = 'Checked',
@@ -125,16 +173,3 @@ export type InputProps<TRole extends InputRole = InputRole> = {
 }
 
 export type OmitInputProps<T extends Partial<InputProps>> = Omit<T, keyof InputProps>;
-
-export interface IInputProvider<TRole extends InputRole> {
-
-  localValue?: InputValue<TRole> | null;
-  inheritedValue?: InputValue<TRole> | null;
-
-  handleChange?(evt: ChangeEvent<HTMLInputElement>): void;
-  handleClick?(evt: MouseEvent<HTMLInputElement>): void;
-}
-
-export interface IInputState {
-
-}

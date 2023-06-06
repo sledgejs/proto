@@ -1,13 +1,18 @@
+/**
+ * General purpose list of component colors.
+ */
 export enum ComponentColor {
   Primary = 'Primary',
   Secondary = 'Secondary',
-  Tertiary = 'Tertiary',
-  Nuclear = 'Nuclear',
   Error = 'Error',
   Warning = 'Warning',
-  Success = 'Success'
+  Success = 'Success',
+  Info = 'Info',
 }
 
+/**
+ * General purpose list of component sizes.
+ */
 export enum ComponentSize {
   Tiny = 'Tiny',
   Small = 'Small',
@@ -16,35 +21,18 @@ export enum ComponentSize {
   Huge = 'Huge'
 }
 
-export type ComponentSizeKey =
-  'tiny' |
-  'small' |
-  'medium' |
-  'large' |
-  'huge';
-
-// TODO: remove enums
-export const ComponentSizes = [
-  'tiny',
-  'small',
-  'medium',
-  'large',
-  'huge'
-] as const;
-
+/**
+ * General purpose list of component variations.
+ */
 export enum ComponentVariant {
   Text = 'Text',
   Fill = 'Fill',
   Inverse = 'Inverse'
 }
 
-export enum ComponentLayout {
-  Button = 'Button',
-  IconButton = 'IconButton',
-  Link = 'Link',
-  LinkButton = 'LinkButton'
-}
-
+/**
+ * General purpose list of component states.
+ */
 export enum ComponentState {
   Default = 'Default',
   Hover = 'Hover',

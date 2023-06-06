@@ -2,12 +2,13 @@ import React, { ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import classNames from 'classnames';
 import { paramCase } from 'change-case';
+import { WarningCircle } from 'phosphor-react';
 import { InputProps, InputRole, OmitInputProps } from '../form/inputSchema';
-import { trace } from '../../dev';
 import { useInputController } from '../form/inputController';
 import { InputContext } from '../form/inputContext';
 import { getInputAttributesFromProps } from '../form/inputUtils';
-import { Warning, WarningCircle } from 'phosphor-react';
+
+import { trace } from '../../dev';
 
 type Props =
   OmitInputProps<React.InputHTMLAttributes<{}>> &

@@ -28,9 +28,6 @@ export class ResourceService
 
   /**
    * Loads and injects a script into the web page.
-   * 
-   * @param url  The URL of the script to load.
-   * @param opts The options to provide to this method.
    */
   async loadScript(url: string, opts: LoadResourceOptions = DefaultLoadResourceOptions): AsyncResult<HTMLScriptElement> {
 

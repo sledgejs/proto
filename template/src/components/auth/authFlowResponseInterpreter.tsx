@@ -1,19 +1,25 @@
 import { useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
-import { AuthFlowResponse, AuthFlowResponseType } from '../../services/auth/authSchema';
 import { Navigate } from 'react-router-dom';
-import { useKernel } from '../../kernel/kernelHooks';
+import { observer } from 'mobx-react-lite';
 import { Error } from '../../errors/error';
-import { trace } from '../../dev';
-import { DevRuntime } from '../../dev/devRuntime';
+import { useKernel } from '../../kernel/kernelHooks';
 import { Routes } from '../../routes/routes';
+import { AuthFlowResponse, AuthFlowResponseType } from '../../services/auth/authSchema';
 import { BackdropPage } from '../../pages/backdrop/backdropPage';
+
+import { DevRuntime } from '../../dev/devRuntime';
+import { trace } from '../../dev';
 
 type Props = {
   response?: AuthFlowResponse | null;
   error?: Error | null;
 }
 
+/**
+ * Receives the response of an authentication flow
+ * and applies the appropriate UI updates, including displaying errors,
+ * loading masks, redirecting, etc.
+ */
 export const AuthFlowResponseInterpreter = observer(({
   response,
   error

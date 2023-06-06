@@ -20,8 +20,6 @@ export class ComponentService
    * Gets a page state for the specified page name if one 
    * has been previously been defined, or `null` otherwise.
    * 
-   * @param name The qualified name of the page for which to return the state.
-   * 
    * @typeParam T The type of the qualified name of the page based on which the correct type 
    *              of the page state will be returned.
    */
@@ -31,9 +29,6 @@ export class ComponentService
 
   /**
    * Sets a page state for the specified page name.
-   * 
-   * @param name  The qualified name of the page for which to set the state.
-   * @param model The state which to set.
    * 
    * @typeParam T The type of the qualified name of the page based on which the correct type 
    *              of the input page state will be set.
@@ -45,8 +40,6 @@ export class ComponentService
   /**
    * Deletes the page state for the specified page name.
    * 
-   * @param name  The qualified name of the page which to delete.
-   * 
    * @typeParam T The type of the qualified name of the page.
    */
   deletePage<T extends PageName>(name: T): void {
@@ -56,9 +49,6 @@ export class ComponentService
   /**
    * Returns a React hook which creates and reuses a page state
    * for the specified page name.
-   * 
-   * @param name      The qualified name of the page which to delete.
-   * @param initFunc  The function to use to create the page state if none exists.
    * 
    * @typeParam T The type of the qualified name of the page based on which the correct type 
    *              of the input page state will be set.

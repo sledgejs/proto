@@ -8,6 +8,14 @@ import { App } from '../pages/app';
 import { DevRuntime } from '../dev/devRuntime';
 import { trace } from '../dev';
 
+/**
+ * Starts the application with the following steps:
+ * 
+ * 1. Configure the vendors
+ * 2. Initialize the {@link Kernel}
+ * 3. Create the root DOM container
+ * 4. Render the root React component
+ */
 export function init() {
 
   trace(DevRuntime, `Initialize`);

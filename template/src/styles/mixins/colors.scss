@@ -29,25 +29,7 @@ $component-background-colors: (
       "active": var(--secondary-900),
       "disabled": var(--secondary-700),
     )
-  ),
-  "tertiary": (
-    "fill": (
-      "default": var(--neutral-3),
-      "hover": var(--neutral-5),
-      "focus": var(--neutral-3),
-      "active": var(--neutral-10),
-      "disabled": var(--neutral-0),
-    )
-  ),
-  "nuclear": (
-    "fill": (
-      "default": var(--neutral-0),
-      "hover": var(--neutral-2),
-      "focus": var(--neutral-0),
-      "active": var(--neutral-3),
-      "disabled": var(--neutral-0),
-    )
-  ),
+  )
 );
 
 $component-border-colors: (

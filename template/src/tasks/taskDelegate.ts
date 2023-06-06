@@ -2,88 +2,102 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { error, trace } from '../dev';
 import { Error } from '../errors/error';
 import { ErrorCode } from '../errors/errorCode';
-import { ErrorGroup } from '../errors/errorGroup';
 import { TaskStatus } from './taskSchema';
-import type { AsyncResult, Result } from '../core/types';
+import type { AbortableProps, AsyncResult, Result } from '../core/types';
 import { DevAnnotatedObject } from '../dev/devSchema';
 import { PromiseRelay } from '../core/async/promiseRelay';
 import { toError } from '../errors/errorUtils';
+import { Kernel } from '../kernel/kernel';
+import { Node } from '../kernel/node';
 
-type Props = {
-  abortSignal?: AbortSignal | null;
-}
+type Props = AbortableProps;
 
 export interface TaskDelegate<T = true>
   extends DevAnnotatedObject { }
 
+/**
+ * Delegate object which handles all task related logic.
+ * Ideally this should only be used by {@link BaseTask} but this class
+ * exists in order to allow for other types of tasks to be easily implemented.
+ */
 export class TaskDelegate<T = true>
-  implements DevAnnotatedObject {
+  extends Node {
 
-  constructor(props: Props = {}) {
+  constructor(kernel: Kernel, props: Props = {}) {
+    super(kernel);
     makeObservable(this);
 
-    this.externalAbortSignal = props.abortSignal ?? null;
-  }
- 
-  readonly abortedError = new Error(ErrorCode.Aborted);
-
-  readonly abortController = new AbortController();
-  get defaultAbortSignal() {
-    return this.abortController.signal;
+    this.abortSignal = props.abortSignal ?? null;
   }
 
-  readonly externalAbortSignal: AbortSignal | null = null;
+  /** @inheritDoc ITask.abortSignal */
+  readonly abortSignal: AbortSignal | null = null;
 
-  get abortSignal() {
-    return (
-      this.externalAbortSignal ??
-      this.abortController.signal);
-  }
+  private readonly promiseRelay = new PromiseRelay<Result<T>>();
 
-  readonly promiseRelay = new PromiseRelay<Result<T>>();
+  /** @inheritDoc ITask.promise */
   get promise(): AsyncResult<T> {
     return this.promiseRelay.promise;
   }
 
+  /** @inheritDoc ITask.status */
   @observable status: TaskStatus = TaskStatus.Idle;
+
+  /** @inheritDoc ITask.result */
   @observable.shallow result: Result<T> | null = null;
 
-  @computed get value(): T | null {
+  /** @inheritDoc ITask.value */
+  @computed
+  get value(): T | null {
     return this.result?.[0] ?? null;
   }
 
-  @computed get error(): Error | null {
+  /** @inheritDoc ITask.error */
+  @computed
+  get error(): Error | null {
     return this.result?.[1] ?? null;
   }
 
-  @computed get isIdle() {
+  /** @inheritDoc ITask.isIdle */
+  @computed
+  get isIdle() {
     return this.status === TaskStatus.Idle;
   }
 
-  @computed get isRunning() {
+  /** @inheritDoc ITask.isRunning */
+  @computed
+  get isRunning() {
     return this.status === TaskStatus.Running;
   }
 
-  @computed get isCompleted() {
+  /** @inheritDoc ITask.isCompleted */
+  @computed
+  get isCompleted() {
     return this.status === TaskStatus.Completed;
   }
 
-  @computed get isError() {
+  /** @inheritDoc ITask.isError */
+  @computed
+  get isError() {
     return this.status === TaskStatus.Error;
   }
 
-  @computed get isSettled() {
+  /** @inheritDoc ITask.isSettled */
+  @computed
+  get isSettled() {
     return (this.isCompleted || this.isError);
   }
 
-  @computed get isAborted() {
+  /** @inheritDoc ITask.isAborted */
+  @computed
+  get isAborted() {
     return this.error?.code === ErrorCode.Aborted;
   }
 
-  async run(): AsyncResult<T> {
-    throw new Error(ErrorCode.NotCallable);
-  }
-
+  /**
+   * Sets the status of the task delegate to {@link TaskStatus.Running}
+   * Returns an error if the task cannot be set to running.
+   */
   @action
   setRunning(): Result<unknown> {
 
@@ -96,6 +110,11 @@ export class TaskDelegate<T = true>
     return [true];
   }
 
+  /**
+   * Sets the result on the task delegate and sets the appropriate
+   * {@link TaskStatus.Error} or {@link TaskStatus.Completed} status
+   * depending on the provided result.
+   */
   @action
   setResult(res: Result<T>): Result<T> {
     this.result = res;
@@ -110,28 +129,24 @@ export class TaskDelegate<T = true>
     return res;
   }
 
+  /**
+   * Sets the status of the task delegate to {@link TaskStatus.Completed}
+   * and sets the result based on the provided value.
+   */
   @action
   setCompleted(val: T): Result<T> {
     trace(this, { task: this });
     return this.setResult([val]);
   }
 
+  /**
+   * Sets the status of the task delegate to {@link TaskStatus.Error}
+   * and sets the result based on the provided error.
+   */
   @action
   setError(err: Error | ErrorCode): Result<T> {
     const errObj = toError(err);
     error(this, errObj);
     return this.setResult([null, errObj]);
-  }
-
-  @action
-  setAborted(): Result<T> {
-    trace(this);
-    return this.setError(this.abortedError);
-  }
-
-  @action
-  handleSubTaskErrors(errs: Error[]) {
-    const errGroup = new ErrorGroup(errs);
-    return this.setError(errGroup);
   }
 }

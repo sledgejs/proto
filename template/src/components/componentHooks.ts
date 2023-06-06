@@ -3,7 +3,6 @@ import { ObservableRef } from '../core/observableRef';
 import { Func, Maybe } from '../core/types';
 import { Kernel } from '../kernel/kernel';
 import { useKernel } from '../kernel/kernelHooks';
-import { PageName, PageState } from '../pages/pageSchema';
 
 export type UseModelFunc<T> = Func<T, [Kernel]>;
 

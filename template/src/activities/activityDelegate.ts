@@ -1,19 +1,23 @@
-import { action, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import { PromiseRelay } from '../core/async/promiseRelay';
-import type { AsyncResult, Result } from '../core/types';
-import { error, trace } from '../dev';
 import { ErrorCode } from '../errors/errorCode';
 import { toError } from '../errors/errorUtils';
-import { Kernel } from '../kernel/kernel';
 import { Node } from '../kernel/node';
 import { ActivityStatus } from './activitySchema';
 
-type Props<T, TModel> = {
-  model: TModel;
-  abortSignal: AbortSignal;
+import type { Error } from '../errors/error';
+import type { AbortableProps, AsyncResult, Result } from '../core/types';
+import type { Kernel } from '../kernel/kernel';
+
+import { error, trace } from '../dev';
+
+type Props<T, TModel> = AbortableProps & {
+  model?: TModel | null;
 }
 
 /**
+ * @experimental
+ * 
  * An Activity describes user interactions like forms, dialogs, etc,
  * and instead of interacting with the state via events and callbacks,
  * an Activity reports the progress via promises (and in the future, generators).
@@ -27,39 +31,98 @@ export class ActivityDelegate<T, TModel>
     super(kernel);
     makeObservable(this);
 
-    this.model = props?.model;
+    this.model = props?.model ?? null;
 
-    this.externalAbortSignal = props.abortSignal ?? null;
+    this.abortSignal = props.abortSignal ?? null;
   }
 
-  readonly abortedError = new Error(ErrorCode.Aborted);
+  /** @inheritDoc IActivity.abortSignal */
+  readonly abortSignal: AbortSignal | null = null;
 
-  readonly defaultAbortController = new AbortController();
-  get defaultAbortSignal() {
-    return this.defaultAbortController.signal;
-  }
-
-  readonly externalAbortSignal: AbortSignal | null = null;
-
-  get abortSignal() {
-    return this.defaultAbortController.signal;
-  }
-
-  readonly promiseRelay = new PromiseRelay<Result<T>>();
+  private readonly promiseRelay = new PromiseRelay<Result<T>>();
+  
+  /** @inheritDoc IActivity.promise */
   get promise(): AsyncResult<T> {
     return this.promiseRelay.promise;
   }
 
-  readonly model: TModel;
+  /** @inheritDoc IActivity.model */
+  readonly model: TModel | null;
 
+  /** @inheritDoc IActivity.status */
   @observable status: ActivityStatus = ActivityStatus.Idle;
+  
+  /** @inheritDoc IActivity.result */
   @observable.shallow result: Result<T> | null = null;
 
+  /** @inheritDoc IActivity.value */
+  @computed
+  get value(): T | null {
+    return this.result?.[0] ?? null;
+  }
+
+  /** @inheritDoc IActivity.error */
+  @computed
+  get error(): Error | null {
+    return this.result?.[1] ?? null;
+  }
+
+  /** @inheritDoc IActivity.isIdle */
+  @computed
+  get isIdle() {
+    return this.status === ActivityStatus.Idle;
+  }
+
+  /** @inheritDoc IActivity.isStarted */
+  @computed
+  get isStarted() {
+    return this.status === ActivityStatus.Started;
+  }
+
+  /** @inheritDoc IActivity.isCompleted */
+  @computed
+  get isCompleted() {
+    return this.status === ActivityStatus.Completed;
+  }
+
+  /** @inheritDoc IActivity.isError */
+  @computed
+  get isError() {
+    return this.status === ActivityStatus.Error;
+  }
+
+  /** @inheritDoc IActivity.isCanceled */
+  @computed
+  get isCanceled() {
+    return this.status === ActivityStatus.Canceled;
+  }
+
+  /** @inheritDoc IActivity.isSettled */
+  @computed
+  get isSettled() {
+    return (this.isCompleted || this.isError);
+  }
+
+  /** @inheritDoc IActivity.isAborted */
+  @computed
+  get isAborted() {
+    return this.error?.code === ErrorCode.Aborted;
+  }
+
+  /**
+   * Sets the status of the activity delegate to {@link ActivityStatus.Started}
+   * Returns an error if the activity cannot be set to `Started`.
+   */
   @action
   setStarted() {
     this.status = ActivityStatus.Started;
   }
   
+  /**
+   * Sets the result on the activity delegate and sets the appropriate
+   * {@link ActivtyStatus.Error} or {@link ActivtyStatus.Completed} status
+   * depending on the provided result.
+   */
   @action
   setResult(res: Result<T>): Result<T> {
     this.result = res;
@@ -74,22 +137,24 @@ export class ActivityDelegate<T, TModel>
     return res;
   }
 
+  /**
+   * Sets the status of the activity delegate to {@link ActivityStatus.Completed}
+   * and sets the result based on the provided value.
+   */
+  @action
+  setCompleted(val: T): Result<T> {
+    trace(this, { activity: this });
+    return this.setResult([val]);
+  }
+
+  /**
+   * Sets the status of the activity delegate to {@link ActivityStatus.Error}
+   * and sets the result based on the provided error.
+   */
   @action
   setError(err: Error | ErrorCode): Result<T> {
     const errObj = toError(err);
     error(this, errObj);
     return this.setResult([null, errObj]);
-  }
-
-  @action
-  setAborted(): Result<T> {
-    trace(this);
-    return this.setError(this.abortedError);
-  }
-
-  @action
-  setCompleted(val: T): Result<T> {
-    trace(this, { task: this });
-    return this.setResult([val]);
   }
 }

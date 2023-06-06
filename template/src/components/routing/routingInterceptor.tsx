@@ -4,6 +4,10 @@ import { useLocation, useNavigationType } from 'react-router-dom';
 import { useKernel } from '../../kernel/kernelHooks';
 import { RouteAction } from '../../routes/routeSchema';
 
+/**
+ * Intercepts routing updates because `react-router-dom` v5 does not expose
+ * the history anymore. The updates are passed to the {@link RoutingService}
+ */
 export const RoutingInterceptor = observer(() => {
 
   const location = useLocation();

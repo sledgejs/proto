@@ -4,6 +4,9 @@ import { Kernel } from '../../kernel/kernel';
 import { Node } from '../../kernel/node';
 import { useModel } from '../componentHooks';
 
+/**
+ * Backing object for form labels in the application.
+ */
 export class LabelState
   extends Node {
 
@@ -12,24 +15,43 @@ export class LabelState
     makeObservable(this);
   }
 
+  /**
+   * The DOM ID of the input with which this label is associated.
+   */
   @observable inputId: string | null = null;
+  
+  /**
+   * The DOM ID of this label.
+   */
   @observable labelId: string | null = null;
 
+  /**
+   * Sets the value of {@link LabelState.inputId}.
+   */
   @action
   setInputId(inputId: Maybe<string>) {
     this.inputId = inputId ?? null;
   }
 
+  /**
+   * Clears the value of {@link LabelState.inputId}.
+   */
   @action
   clearInputId() {
     this.inputId = null;
   }
   
+  /**
+   * Sets the value of {@link LabelState.labelId}.
+   */
   @action
   setLabelId(labelId: Maybe<string>) {
     this.labelId = labelId ?? null;
   }
 
+  /**
+   * Clears the value of {@link LabelState.labelId}.
+   */
   @action
   clearLabelId() {
     this.labelId = null;

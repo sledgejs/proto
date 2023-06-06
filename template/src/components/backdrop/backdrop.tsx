@@ -2,7 +2,6 @@ import './backdrop.scss';
 
 import { HTMLAttributes, ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
-import { ComponentSizeKey } from '../componentSchema';
 import classNames from 'classnames';
 import { SpinnerGap } from 'phosphor-react';
 
@@ -10,17 +9,15 @@ type Props = HTMLAttributes<HTMLDivElement> & {
   open?: boolean;
   spinner?: ReactNode;
   message?: ReactNode;
-  size?: ComponentSizeKey;
 }
 
 export const Backdrop = observer(({
   open = false,
   message,
-  size,
   className
 }: Props) => {
 
-  className = classNames('backdrop', size, className);
+  className = classNames('backdrop', className);
 
   return (
     <div className={className}

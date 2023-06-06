@@ -1,11 +1,15 @@
 import { action, makeObservable, observable } from 'mobx';
 import { Kernel } from '../../kernel/kernel';
-import { error, initDev } from '../../dev';
-import { trace } from '../../dev';
 import { Node } from '../../kernel/node';
 import { InputState } from './inputState';
 import { useModel } from '../componentHooks';
 
+import { error, initDev } from '../../dev';
+import { trace } from '../../dev';
+
+/**
+ * Backing object for form fields in the application.
+ */
 export class FieldState
   extends Node {
 
@@ -17,8 +21,15 @@ export class FieldState
     trace(this);
   }
 
+  /**
+   * The child input which is contained by this field.
+   */
   @observable input: InputState | null = null;
 
+  /**
+   * Attaches a child input to this instance.
+   * If there is alreadty a child input attached, it will be overwritten.
+   */
   @action
   attachInput(input: InputState) {
     if (this.input && this.input !== input)
@@ -27,6 +38,9 @@ export class FieldState
     this.input = input;
   }
 
+  /**
+   * Detaches the child input from this instance.
+   */
   @action
   detachInput() {
     this.input = null;

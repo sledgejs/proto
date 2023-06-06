@@ -1,8 +1,6 @@
 export enum ButtonStyle {
   Primary = 'Primary',
-  Secondary = 'Secondary',
-  Tertiary = 'Tertiary',
-  Nuclear = 'Nuclear' 
+  Secondary = 'Secondary'
 }
 
 export type ButtonRenderProps = {

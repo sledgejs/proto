@@ -38,8 +38,6 @@ export class AuthPermit {
    * Creates a new instance of AuthPermit.
    * The data object needs to have been validated using `isAuthPermitDataValid`, otherwise an `AssertionError` is thrown.
    * Use `tryCreateAuthPermit` if you're not sure about the data validity.
-   * @param data The validated data with which to create the permit.
-   * @throws {AssertionError}
    */
   private constructor(data: AuthPermitPreparedData) {
 
@@ -56,7 +54,6 @@ export class AuthPermit {
 
   /**
    * Creates a new instance of AuthPermit or returns an error if the data is invalid.
-   * @param data  The data with which to create the permit.
    */
   static create(data: AuthPermitData): Result<AuthPermit> {
 

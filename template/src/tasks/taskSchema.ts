@@ -5,16 +5,16 @@ import type { Node } from '../kernel/node';
 export type DefaultTaskValueType = true;
 
 /**
- * Describes the status of a {@link Task} at a particular moment in time.
+ * Describes the status of a {@link ITask} at a particular moment in time.
  */
 export enum TaskStatus {
   /**
-   * The task has not been started yet using {@link ITask.run}.
+   * The task has not been started yet.
    */
   Idle = 'Idle',
 
   /**
-   * The task has been started using {@link ITask.run} but it hasn't settled yet.
+   * The task has been started but it hasn't settled yet.
    */
   Running = 'Running',
   
@@ -32,14 +32,14 @@ export enum TaskStatus {
 /**
  * For tasks that derive from the {@link BaseTask} class, this represents the function
  * that will be invoked by the task and contains the actual logic of the task.
- * @typeParam T - The type of the value returned by the task.
+ * @typeParam T The type of the value returned by the task.
  */
 export type TaskExecutor<T = DefaultTaskValueType> =
   () => AsyncResult<T>;
 
 /**
  * The interface for all Task implementations.
- * @typeParam T - The type of the value returned by the task.
+ * @typeParam T The type of the value returned by the task.
  */
 export interface ITask<T = DefaultTaskValueType>
   extends Node {
@@ -50,7 +50,7 @@ export interface ITask<T = DefaultTaskValueType>
   taskId: string;
 
   /**
-   * Gets the user-defined label for the task that has been provided in the constructor.
+   * Gets the user-defined label for the task.
    */
   label: string | null;
 
@@ -63,7 +63,7 @@ export interface ITask<T = DefaultTaskValueType>
 
   /**
    * Gets a promise that resolves with the result of the task, once the task settles.
-   * @remarks The `Promise` never rejects, since the error will be contained in the {@link Result | result} if it occurs.
+   * @remark The `Promise` never rejects, since the error will be contained in the {@link Result | result} if it occurs.
    */
   promise: AsyncResult<T>;
 

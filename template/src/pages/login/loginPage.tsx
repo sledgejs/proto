@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet-async';
 import { Form } from '../../components/form/form';
 import { Field } from '../../components/form/field';
 import { TextField } from '../../components/textField/textField';
-import { PasswordTextField } from '../../components/textField/passwordTextField';
 import { Button } from '../../components/button/button';
 import { RequiredLabelContent } from '../../components/form/labelContent';
 import { useModel, useModelBindings } from '../../components/componentHooks';
@@ -82,7 +81,7 @@ export const LoginPage = observer(() => {
 
               <div className="grid-item">
                 <Field label={<RequiredLabelContent content="Password" />}>
-                  <PasswordTextField
+                  <TextField
                     id="loginForm_password"
                     modelRef={model.passwordInputRef}
                     hooks={model.passwordInputHooks}

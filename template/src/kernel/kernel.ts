@@ -38,7 +38,6 @@ export interface Kernel
  * - It is a central hub through which all objects can communicate and get references to other objects, either directly or through message passing
  * - It acts as a place to store data and logic not directly related to specific pages or components. This should be done mostly through Services
  * - It can be exposed in testing and development mode for debugging and mocking
- * 
  */
 export class Kernel
   implements Node, DevAnnotatedObject {

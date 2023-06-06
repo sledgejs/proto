@@ -70,7 +70,6 @@ export class UiService
 
   /**
    * Handler for the root `pointerdown` event.
-   * @param evt The event which will be handled.
    */
   @action
   handleRootPointerDown = (evt: PointerEvent) => {
@@ -79,7 +78,6 @@ export class UiService
 
   /**
    * Handler for the root `pointerup` event.
-   * @param evt The event which will be handled.
    */
   @action
   handleRootPointerUp = (evt: PointerEvent) => {
@@ -88,7 +86,6 @@ export class UiService
 
   /**
    * Handler for the root `pointercancel` event.
-   * @param evt The event which will be handled.
    */
   @action
   handleRootPointerCancel = (evt: PointerEvent) => {
@@ -97,7 +94,6 @@ export class UiService
 
   /**
    * Handler for the root `dragstart` event.
-   * @param evt The event which will be handled.
    */
   @action
   handleRootDragStart = (evt: DragEvent) => {
@@ -106,7 +102,6 @@ export class UiService
 
   /**
    * Handler for the root `dragend` event.
-   * @param evt The event which will be handled.
    */
   @action
   handleRootDragEnd = (evt: DragEvent) => {
@@ -116,7 +111,6 @@ export class UiService
 
   /**
    * Handler for the root `drop` event.
-   * @param evt The event which will be handled.
    */
   @action
   handleRootDrop = (evt: DragEvent) => {
