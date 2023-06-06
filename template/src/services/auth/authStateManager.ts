@@ -1,5 +1,6 @@
 import { computed, makeObservable, observable } from 'mobx';
 import { initDev, trace } from '../../dev';
+import { ErrorCode } from '../../errors/errorCode';
 import { Error } from '../../errors/error';
 import { Node } from '../../kernel/node';
 import { Kernel } from '../../kernel/kernel';
@@ -119,6 +120,6 @@ export class AuthStateManager
       return state;
     }
 
-    throw new Error('InternalError', { message: `The state iterable was finished which should never happen.` });
+    throw new Error(ErrorCode['InternalError'], { message: `The state iterable was finished which should never happen.` });
   }
 }

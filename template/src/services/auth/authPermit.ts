@@ -3,6 +3,7 @@ import isEqual from 'lodash/isEqual';
 import { isFiniteNumber, isNonEmptyString } from '../../core/typeUtils';
 import { Result } from '../../core/types';
 import { isTokenValid } from './authUtils';
+import { ErrorCode } from '../../errors/errorCode';
 import { Error } from '../../errors/error';
 import { getNowSeconds } from '../../core/dateTimeUtils';
 import { AuthTokenPayload } from './authSchema';
@@ -109,14 +110,14 @@ function prepareAuthPermitData(data: AuthPermitData): Result<AuthPermitPreparedD
 
   // validate that we have an ID token
   if (!isNonEmptyString(token))
-    return [null, new Error('Auth.InvalidToken')];
+    return [null, new Error(ErrorCode['Auth.InvalidToken'])];
 
   // if a payload is provided, we will compare it against the decoded token payload
   let decodedIdTokenPayload: AuthTokenPayload;
   try {
     decodedIdTokenPayload = jwtDecode(token);
   } catch (err) {
-    return [null, new Error('Auth.InvalidToken')];
+    return [null, new Error(ErrorCode['Auth.InvalidToken'])];
   }
 
   if (tokenPayload) {
@@ -132,10 +133,10 @@ function prepareAuthPermitData(data: AuthPermitData): Result<AuthPermitPreparedD
     !isFiniteNumber(exp) ||
     !isFiniteNumber(iat) ||
     !isNonEmptyString(sub))
-    return [null, new Error('Auth.InvalidToken')];
+    return [null, new Error(ErrorCode['Auth.InvalidToken'])];
 
   if (exp <= getNowSeconds())
-    return [null, new Error('Auth.TokenExpired')];
+    return [null, new Error(ErrorCode['Auth.TokenExpired'])];
 
   const validatedToken: string = token;
   const validatedTokenPayload: AuthTokenPayload = {

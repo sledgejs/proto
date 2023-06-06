@@ -1,9 +1,45 @@
-import { getEnumLikeObjectFromLookup } from '../core/enumUtils';
-import { ErrorLookup } from './errorLookup';
-
-export type ErrorCode = keyof typeof ErrorLookup;
-
 /**
+ * @enum
  * The complete list of error codes that are available across the application.
  */
-export const ErrorCode = getEnumLikeObjectFromLookup(ErrorLookup);
+export enum ErrorCode {
+  'SessionStorageNotAvailable' = 'SessionStorageNotAvailable',
+  'SessionStorageValueNotSetProperly' = 'SessionStorageValueNotSetProperly',
+  'LocalStorageNotAvailable' = 'LocalStorageNotAvailable',
+  'LocalStorageValueNotSetProperly' = 'LocalStorageValueNotSetProperly',
+  'Services.LoadServiceFailed' = 'Services.LoadServiceFailed',
+  'Api.NotAuthorized' = 'Api.NotAuthorized',
+  'Api.RetryRequestFailed' = 'Api.RetryRequestFailed',
+  'Api.AuthContextInvalidated' = 'Api.AuthContextInvalidated',
+  'Api.ProviderNotAuthorized' = 'Api.ProviderNotAuthorized',
+  'Api.GraphQlError' = 'Api.GraphQlError',
+  'Api.UploadError' = 'Api.UploadError',
+  'Api.MissingGraphQlData' = 'Api.MissingGraphQlData',
+  'Api.FalsyMutationResult' = 'Api.FalsyMutationResult',
+  'Api.MalformedResponse' = 'Api.MalformedResponse',
+  'Auth.ExistingSessionNotFound' = 'Auth.ExistingSessionNotFound',
+  'Auth.ExistingSessionExpired' = 'Auth.ExistingSessionExpired',
+  'Auth.FlowAlreadyExecuting' = 'Auth.FlowAlreadyExecuting',
+  'Auth.InvalidToken' = 'Auth.InvalidToken',
+  'Auth.InvalidPermit' = 'Auth.InvalidPermit',
+  'Auth.TokenExpired' = 'Auth.TokenExpired',
+  'Auth.FetchIdentityError' = 'Auth.FetchIdentityError',
+  'Routing.RedirectUrlExceedsMaxLength' = 'Routing.RedirectUrlExceedsMaxLength',
+  'Routing.DefaultRouteDescriptorMissing' = 'Routing.DefaultRouteDescriptorMissing',
+  'Resources.LoadScriptFailed' = 'Resources.LoadScriptFailed',
+  'Form.MultipleApiFormErrors' = 'Form.MultipleApiFormErrors',
+  'Form.NonValidationMultipleApiFormErrors' = 'Form.NonValidationMultipleApiFormErrors',
+  'ErrorGroup' = 'ErrorGroup',
+  'NotCallable' = 'NotCallable',
+  'Aborted' = 'Aborted',
+  'Timeout' = 'Timeout',
+  'Overruled' = 'Overruled',
+  'Canceled' = 'Canceled',
+  'InternalError' = 'InternalError',
+  'InvalidCallError' = 'InvalidCallError',
+  'InvalidState' = 'InvalidState',
+  'ParameterError' = 'ParameterError',
+  'TaskAlreadyRunning' = 'TaskAlreadyRunning',
+  'UnknownError' = 'UnknownError',
+  'NetworkOffline' = 'NetworkOffline'
+}

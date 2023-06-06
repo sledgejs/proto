@@ -2,6 +2,7 @@ import last from 'lodash/last';
 import { Location, matchPath } from 'react-router-dom';
 import { initDev, trace } from '../../dev';
 import { Error } from '../../errors/error';
+import { ErrorCode } from '../../errors/errorCode';
 import { Kernel } from '../../kernel/kernel';
 import { Node } from '../../kernel/node';
 import { RouteLookup } from '../../routes/routeLookup';
@@ -121,6 +122,6 @@ export class HistoryManager
         return desc;
     }
 
-    throw new Error('Routing.DefaultRouteDescriptorMissing');
+    throw new Error(ErrorCode['Routing.DefaultRouteDescriptorMissing']);
   }
 }

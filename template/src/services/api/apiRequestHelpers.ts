@@ -1,5 +1,6 @@
 import { assert, assertDefined } from '../../core/assert';
 import { AbortableParams, AsyncResult } from '../../core/types';
+import { ErrorCode } from '../../errors/errorCode';
 import { Error } from '../../errors/error';
 import { AuthContextType, AuthStateType } from '../auth/authSchema';
 import { AuthState } from '../auth/authState';
@@ -51,7 +52,7 @@ export async function runApiRequest<T>(params: Params<T>): AsyncResult<T> {
   const currState = mediator.getState();
   switch (currState.type) {
     case AuthStateType.Unauthorized:
-      return [null, new Error('Api.NotAuthorized')];
+      return [null, new Error(ErrorCode['Api.NotAuthorized'])];
 
     case AuthStateType.Authorizing:
       return runRequestOnAuthorizingState(params);
@@ -79,7 +80,7 @@ async function runRequestOnAuthorizingState<T>(params: Params<T>): AsyncResult<T
     ]);
 
     if (nextState.isUnauthorized)
-      return [null, new Error('Api.NotAuthorized')];
+      return [null, new Error(ErrorCode['Api.NotAuthorized'])];
 
     return runRequestOnAuthorizedState(params);
   }
@@ -106,7 +107,7 @@ async function runRequestOnAuthorizedState<T>(params: Params<T>): AsyncResult<T>
       switch (context?.type) {
         case AuthContextType.Anonymous:
           // this should not happen
-          return [null, new Error('Api.NotAuthorized')];
+          return [null, new Error(ErrorCode['Api.NotAuthorized'])];
 
         case AuthContextType.Authenticated:
 
@@ -123,14 +124,14 @@ async function runRequestOnAuthorizedState<T>(params: Params<T>): AsyncResult<T>
             return [null, reauthErr];
 
           if (!reauthState.isAuthorized)
-            return [null, new Error('Api.NotAuthorized')];
+            return [null, new Error(ErrorCode['Api.NotAuthorized'])];
 
           const reauthCtx = reauthState.context;
 
           assertDefined(reauthCtx);
 
           if (reauthCtx.isAnonymous)
-            return [null, new Error('Api.NotAuthorized')];
+            return [null, new Error(ErrorCode['Api.NotAuthorized'])];
 
           const [retryRes, retryErr] = await execRequest(params);
           if (retryErr)
@@ -159,7 +160,7 @@ async function runRequestOnAuthorizedState<T>(params: Params<T>): AsyncResult<T>
           return [res];
       }
 
-      return [null, new Error('InvalidState')];
+      return [null, new Error(ErrorCode['InvalidState'])];
   }
 }
 
@@ -178,7 +179,7 @@ async function execRequest<T>({ executor: func, mediator, abortSignal }: Params<
     return await func(params);
 
   } catch (err) {
-    return [null, new Error('Api.GraphQlError', { source: err })];
+    return [null, new Error(ErrorCode['Api.GraphQlError'], { source: err })];
   }
 }
 

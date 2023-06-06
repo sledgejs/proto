@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloError, ApolloQueryResult, DefaultContext, DocumentNode, FetchResult, MutationOptions, NormalizedCacheObject, Observable, OperationVariables, QueryOptions, ServerError, SubscriptionOptions } from '@apollo/client';
 import { OperationDefinitionNode } from 'graphql';
 import { AsyncResult, Maybe, Result } from '../../core/types';
+import { ErrorCode } from '../../errors/errorCode';
 import { Error } from '../../errors/error';
 import { GraphQlMutationParams, GraphQlOperationParams, GraphQlQueryParams, GraphQlSubscriptionParams } from './graphQlSchema';
 import { ApiRequestAuthMode } from './apiSchema';
@@ -83,9 +84,9 @@ export async function runGraphQlMutation<
       });
 
       if (hasUnauthorizedError)
-        return [null, new Error('Api.ProviderNotAuthorized')];
+        return [null, new Error(ErrorCode['Api.ProviderNotAuthorized'])];
 
-      return [null, new Error('Api.GraphQlError', { source: errors })];
+      return [null, new Error(ErrorCode['Api.GraphQlError'], { source: errors })];
     }
 
     return [result.data ?? true];
@@ -220,13 +221,13 @@ function decodeResult<TData = any>(
   if (rawError) {
     const err = decodeError(rawError);
     if (!err)
-      return [null, new Error('Api.GraphQlError', { source: rawError })];
+      return [null, new Error(ErrorCode['Api.GraphQlError'], { source: rawError })];
 
     return [null, err];
   }
 
   if (!rawResult)
-    return [null, new Error('Api.MalformedResponse')];
+    return [null, new Error(ErrorCode['Api.MalformedResponse'])];
 
   const maybeQueryResult = rawResult as ApolloQueryResult<TData>;
   const maybeFetchResult = rawResult as FetchResult<TData>;
@@ -236,7 +237,7 @@ function decodeResult<TData = any>(
 
   if (Array.isArray(rawResult.errors) && rawResult.errors.length > 0)
     // todo: move to decode
-    return [null, new Error('Api.GraphQlError', { source: rawResult.errors })];
+    return [null, new Error(ErrorCode['Api.GraphQlError'], { source: rawResult.errors })];
 
   return [rawResult.data!];
 }
@@ -249,7 +250,7 @@ function decodeError(error: any): Error | null {
   const maybeServerError = maybeApolloError?.networkError as Maybe<ServerError>;
 
   if (maybeServerError?.statusCode === 401)
-    return new Error('Api.ProviderNotAuthorized', { source: error });
+    return new Error(ErrorCode['Api.ProviderNotAuthorized'], { source: error });
 
-  return new Error('Api.GraphQlError', { source: error });
+  return new Error(ErrorCode['Api.GraphQlError'], { source: error });
 }

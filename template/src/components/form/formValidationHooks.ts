@@ -35,10 +35,10 @@ export function forwardFormErrorWithMaskedCodes(
       const ignoredCodes = intersection([error.code, ...error.childErrors.map(err => err.code)], maskedCodes);
 
       if (ignoredCodes.length > 0)
-        error = new Error('Form.MultipleApiFormErrors');
+        error = new Error(ErrorCode['Form.MultipleApiFormErrors']);
 
       else if (isErrorGroup(error)) {
-        error = new Error('Form.NonValidationMultipleApiFormErrors', {
+        error = new Error(ErrorCode['Form.NonValidationMultipleApiFormErrors'], {
           innerError: error
         });
       }

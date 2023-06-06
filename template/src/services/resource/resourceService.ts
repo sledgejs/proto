@@ -1,5 +1,6 @@
 import { AsyncResult } from '../../core/types';
 import { initDev, trace } from '../../dev';
+import { ErrorCode } from '../../errors/errorCode';
 import { Error } from '../../errors/error';
 import { Kernel } from '../../kernel/kernel';
 
@@ -70,7 +71,7 @@ export class ResourceService
       await scriptPromise;
     }
     catch (err) {
-      return [null, new Error('Resources.LoadScriptFailed')];
+      return [null, new Error(ErrorCode['Resources.LoadScriptFailed'])];
     }
 
     // TODO: test

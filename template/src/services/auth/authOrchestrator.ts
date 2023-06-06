@@ -90,10 +90,10 @@ export class AuthOrchestrator
       !isNonEmptyString(exToken) ||
       !isFiniteNumber(exExpires) ||
       !isNonEmptyString(exUsername))
-      return this.handlePermitError(new Error('Auth.ExistingSessionNotFound'));
+      return this.handlePermitError(new Error(ErrorCode['Auth.ExistingSessionNotFound']));
 
     if (exExpires < getNowSeconds())
-      return this.handlePermitError(new Error('Auth.ExistingSessionExpired'));
+      return this.handlePermitError(new Error(ErrorCode['Auth.ExistingSessionExpired']));
 
     const iat = getNowSeconds();
     const exp = iat + 3600;
@@ -320,7 +320,7 @@ export class AuthOrchestrator
   loadContext(): Result<AuthContext> {
     const { context } = this.stateManager;
     if (!context)
-      return [null, new Error('InternalError', { message: `There is no AuthContext set on the current auth state.` })];
+      return [null, new Error(ErrorCode['InternalError'], { message: `There is no AuthContext set on the current auth state.` })];
 
     this.setContext(context);
     return [context];
@@ -422,7 +422,7 @@ export class AuthOrchestrator
     const [res, err] = await batch(funcs);
 
     if (err) {
-      if (err.code === 'Aborted') {
+      if (err.code === ErrorCode['Aborted']) {
         this.pushUnauthorizedState();
         return [null, err];
       }

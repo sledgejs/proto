@@ -25,7 +25,7 @@ export async function runFetchIdentityStep(params: Params): AsyncResult<UserIden
 
   // validate the permit, and if everything is ok, set it locally
   if (!permit || !permit.isValid)
-    return [null, new Error('Auth.InvalidPermit')];
+    return [null, new Error(ErrorCode['Auth.InvalidPermit'])];
 
   const query = gql`
   query authFetchIdentityStep {
@@ -52,7 +52,7 @@ export async function runFetchIdentityStep(params: Params): AsyncResult<UserIden
   const resObj = res?.getIdentity as EntitySource<User>;
 
   if (err || !resObj) {
-    return [null, new Error('Auth.FetchIdentityError', {
+    return [null, new Error(ErrorCode['Auth.FetchIdentityError'], {
       message: err?.message || 'Could not fetch the identity information.',
       source: err
     })];

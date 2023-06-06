@@ -1,3 +1,5 @@
+
+import { ErrorCode } from '../../errors/errorCode';
 import { Error } from '../../errors/error';
 import { Node } from '../../kernel/node';
 import { AuthFlowResponseType, AuthStateType } from './authSchema';
@@ -59,7 +61,7 @@ export class AuthStateMediator
 
     const { authService, routingService } = this.kernel;
     if (!authService.canRunFlow)
-      return [null, new Error('InternalError', { message: `Cannot run the RefreshPermitFlow because there is another flow in progress.` })];
+      return [null, new Error(ErrorCode['InternalError'], { message: `Cannot run the RefreshPermitFlow because there is another flow in progress.` })];
 
     const { RefreshContextFlow } = await import('./flows/refreshContextFlow');
     const flow = new RefreshContextFlow(this.kernel);
@@ -81,7 +83,7 @@ export class AuthStateMediator
           !context ||
           !context.isValid ||
           !context.isAuthenticated)
-          return [null, new Error('InternalError', { message: `Expected the AuthContext returned by RefreshContextFlow to be valid and of the Authenticated type.` })];
+          return [null, new Error(ErrorCode['InternalError'], { message: `Expected the AuthContext returned by RefreshContextFlow to be valid and of the Authenticated type.` })];
 
         // nothing to do, context will be returned
         trace(this, `Context has been refreshed successfully`, context);
@@ -97,7 +99,7 @@ export class AuthStateMediator
     }
 
     // context is valid and authenticated
-    return [null, new Error('InternalError', { message: `Your session has expired. You should be redirected to the login page.` })];
+    return [null, new Error(ErrorCode['InternalError'], { message: `Your session has expired. You should be redirected to the login page.` })];
   }
 
   /**
