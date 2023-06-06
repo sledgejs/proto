@@ -5,6 +5,10 @@ import { BaseAuthFlow } from './baseAuthFlow';
 
 import { trace } from '../../../dev';
 
+/**
+ * This flow deauthenticates the user and clears 
+ * all data associated with the user.
+ */
 export class LogoutFlow
   extends BaseAuthFlow
   implements IAuthFlow {

@@ -1,6 +1,4 @@
-import { withTypedKeysErrorLookup } from '../../errors/errorLookupUtils';
-
-export const FormErrorLookup = withTypedKeysErrorLookup({
+export const FormErrorLookup = {
   'Form.MultipleApiFormErrors': {},
   'Form.NonValidationMultipleApiFormErrors': {}
-});
+}

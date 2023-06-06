@@ -17,8 +17,7 @@ type Props<
   };
 
 /** 
- * Wrapper around a GraphQL subscription run using Apollo. 
- * Handles everything regarding authentication, network connectivity, debugging, etc.
+ * Wraps a GraphQL subscription in an object similar to a task.
  */
 export class GraphQlSubscription<
   TData = any,
@@ -39,33 +38,50 @@ export class GraphQlSubscription<
     trace(this);
   }
 
-  readonly id = nanoid();
+  private readonly client: ApolloClient<NormalizedCacheObject>;
+  private readonly params: GraphQlSubscriptionParams<TData, TVars>;
 
-  readonly client: ApolloClient<NormalizedCacheObject>;
-  readonly params: GraphQlSubscriptionParams<TData, TVars>;
-
+  /**
+   * Returns the query document of this subscription.
+   */
   get query(): DocumentNode | TypedDocumentNode<TData, TVars> {
     return this.params.query;
   }
 
+  /**
+   * Returns the query variables of this subscription.
+   */
   get variables(): TVars | null {
     return this.params.variables ?? null;
   }
 
+  /**
+   * Returns the operation name of this request.
+   */
   get operationName(): string | null {
     return getGraphQlOperationName(this.query);
   }
 
+  /**
+   * Reference to an `Observable` instance which emits
+   * the events received by the subscription.
+   */
   observable: Observable<TData> | null = null;
 
   private subscription: Subscription | null = null;
 
   private iterableRelay = new AsyncIterableRelay<TData>();
 
+  /**
+   * Async iterable which yields each event emitted by the observable.
+   */
   get iterable(): AsyncIterable<TData> {
     return this.iterableRelay.iterable;
   }
 
+  /**
+   * Starts the subscription and subscribes to its events.
+   */
   async start(): AsyncResult<Observable<TData>> {
     const [observable, err] = await runGraphQlSubscription(this, this.client, this.params);
     if (err)
@@ -82,6 +98,9 @@ export class GraphQlSubscription<
     return [observable];
   }
 
+  /**
+   * Stops the subscription and disposes of the associated resources.
+   */
   stop() {
     this.subscription?.unsubscribe();
     this.subscription = null;

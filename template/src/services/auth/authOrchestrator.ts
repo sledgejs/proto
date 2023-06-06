@@ -25,6 +25,9 @@ import sign from 'jwt-encode';
 
 type Props = AbortableProps;
 
+/**
+ * Enables composition of authentication flows from discrete steps.
+ */
 export class AuthOrchestrator
   extends Node {
 
@@ -38,26 +41,58 @@ export class AuthOrchestrator
     this.abortSignal = props.abortSignal ?? null;
   }
 
+  /**
+   * The abort signal that was provided when the instance was created.
+   */
   readonly abortSignal: AbortSignal | null = null;
 
+  /**
+   * The local auth permit if it was successfully set from a step.
+   */
   @observable permit: AuthPermit | null = null;
+  
+  /**
+   * The local user identity if it was successfully set from a step.
+   */
   @observable identity: UserIdentity | null = null;
+  
+  /**
+   * The local auth context if it was successfully set from a step.
+   */
   @observable context: AuthContext | null = null;
 
+  /**
+   * The local error if the last step failed.
+   */
   @observable error: Error | null = null;
+  
+  /**
+   * The local auth flow response if the flow completed successfully with a response.
+   */
   @observable.shallow response: AuthFlowResponse | null = null;
 
   private readonly promiseRelay = new PromiseRelay<Result<AuthFlowResponse>>();
+
+  /**
+   * Returns a Promise that will resolve once the flow completes.
+   */
   get promise(): AsyncResult<AuthFlowResponse> {
     return this.promiseRelay.promise;
   }
 
-  get stateManager() {
+  private get stateManager() {
     return this.kernel.authService.stateManager;
   }
 
+  /**
+   * Reference to the flow which owns this instance of the orchestrator.
+   */
   flow: IAuthFlow | null = null;
 
+  /**
+   * Marks the flow controlled by this orchestrator as started and sets
+   * the reference to the flow on this instance.
+   */
   @action
   start(flow: IAuthFlow): Result<true> {
     _trace(this, { flow });
@@ -68,17 +103,27 @@ export class AuthOrchestrator
   }
 
   /**
-   * Returns the context which is currently set on the service.
+   * Returns the context which is currently set on the {@link AuthStateManager}.
    */
   getActiveContext(): AuthContext | null {
     return this.stateManager.context;
   }
 
+  /**
+   * Returns `true` if the context set on the {@link AuthStateManager} is valid.
+   */
   isActiveContextValid(): boolean {
     return this.getActiveContext()?.isValid ?? false;
   }
 
-  // #region Permit methods
+  /**
+   * Refreshes the session using the backing auth provider
+   * and sets a new permit on the orchestrator if the step succeeds.
+   * 
+   * @remark
+   * In this boilerplate the implementation is a stub, 
+   * since there is no backing auth provider.
+   */
   async refreshPermit(): AsyncResult<AuthPermit> {
     _trace(this);
 
@@ -119,7 +164,7 @@ export class AuthOrchestrator
   }
 
   @action
-  setPermit(permit: AuthPermit): Result<AuthPermit> {
+  private setPermit(permit: AuthPermit): Result<AuthPermit> {
     this.permit = permit;
     return [permit];
   }
@@ -129,12 +174,9 @@ export class AuthOrchestrator
     this.permit = null;
     return [null, err];
   }
-  // #endregion
-
-  // #region Identity methods
 
   /**
-   * Executes a `getCurrentUser` query using the token from the current AuthPermit,
+   * Executes a query using the token from the current AuthPermit,
    * returns and sets the new UserIdentity on the current orchestrator instance.
    */
   async fetchIdentity(): AsyncResult<UserIdentity> {
@@ -160,7 +202,7 @@ export class AuthOrchestrator
 
 
   @action
-  setIdentity(identity: UserIdentity): Result<UserIdentity> {
+  private setIdentity(identity: UserIdentity): Result<UserIdentity> {
     this.identity = identity;
     return [identity];
   }
@@ -170,10 +212,12 @@ export class AuthOrchestrator
     this.identity = null;
     return [null, err];
   }
-  // #endregion
 
-  // #region Context Methods
-
+  /**
+   * Creates a new authenticated context using the existing permit and identity
+   * and sets it on this orchestrator.
+   * Emits an error if either requirement (permit or identity) is missing.
+   */
   createAuthenticatedContext(): Result<AuthContext> {
 
     const { permit, identity } = this;
@@ -198,6 +242,9 @@ export class AuthOrchestrator
     return [context!];
   }
 
+  /**
+   * Creates an anonymous context and sets it on this orchestrator.
+   */
   createAnonymousContext(): Result<AuthContext> {
     const context = new AuthContext({
       type: AuthContextType.Anonymous
@@ -206,9 +253,24 @@ export class AuthOrchestrator
     this.setContext(context);
     return [context!];
   }
-  // #endregion
 
-  // #region Auth0 Flow Methods
+  @action
+  private setContext(context: AuthContext): Result<AuthContext> {
+
+    this.permit = context.permit;
+    this.identity = context.identity;
+    this.context = context;
+
+    return [context];
+  }
+
+  /**
+   * Signs in the user with the provided credentials using the backing auth provider.
+   * 
+   * @remark
+   * In this boilerplate the implementation is a stub, 
+   * since there is no backing auth provider.
+   */
   async login(input: LoginInput): AsyncResult<AuthPermit> {
     _trace(this, { input });
 
@@ -235,6 +297,13 @@ export class AuthOrchestrator
     return this.setPermit(permit!);
   }
 
+  /**
+   * Signs out the user using the backing auth provider.
+   * 
+   * @remark
+   * In this boilerplate the implementation is a stub, 
+   * since there is no backing auth provider.
+   */
   async logout(): AsyncResult<true> {
     _trace(this);
 
@@ -246,8 +315,11 @@ export class AuthOrchestrator
 
     return [true];
   }
-  // #endregion
 
+  /**
+   * Pushes a new authorized state on the state manager using the existing context.
+   * The context must exist and must be valid, otherwise an error is emitted.
+   */
   @action
   pushAuthorizedState(): Result<true> {
     _trace(this);
@@ -268,6 +340,9 @@ export class AuthOrchestrator
     return [true];
   }
 
+  /**
+   * Pushes a new authorizing state on the state manager.
+   */
   pushAuthorizingState(): Result<true> {
     _trace(this);
 
@@ -278,6 +353,9 @@ export class AuthOrchestrator
     return [true];
   }
 
+  /**
+   * Pushes a new unauthorized state on the state manager.
+   */
   pushUnauthorizedState(): Result<true> {
     _trace(this);
 
@@ -288,6 +366,10 @@ export class AuthOrchestrator
     return [true];
   }
 
+  /**
+   * Invalidates the auth state across the application, pushing
+   * a new unauthorized state and clearing all data on the orchestrator.
+   */
   @action
   invalidate(): Result<boolean> {
     const { stateManager: state } = this;
@@ -300,20 +382,8 @@ export class AuthOrchestrator
     return [true];
   }
 
-  @action
-  setContext(context: AuthContext): Result<AuthContext> {
-
-    this.permit = context.permit;
-    this.identity = context.identity;
-    this.context = context;
-
-    return [context];
-  }
-
-  // #endregion
-
   /**
-   * Loads the current AuthPermit from the AuthService into the orchestrator.
+   * Loads the current permit from the state manager into this orchestrator.
    * If no permit exists, an Error is returned.
    */
   @action
@@ -326,12 +396,10 @@ export class AuthOrchestrator
     return [context];
   }
 
-  reload(): Result<true> {
-    window.location.reload();
-    return [true];
-  }
-
-
+  /**
+   * Sets the final result on the orchestrator as an error result
+   * using the provided error.
+   */
   @action
   setError(err: Error | ErrorCode): Result<AuthFlowResponse> {
 
@@ -370,46 +438,82 @@ export class AuthOrchestrator
     return [this.response];
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.Success} type.
+   */
   @action
   setSuccess() {
     return this.setResponse(AuthFlowResponseType.Success);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.Authorized} type.
+   */
   @action
   setAuthorized() {
     return this.setResponse(AuthFlowResponseType.Authorized);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.RedirectAfterLogout} type.
+   */
   @action
   setRedirectAfterLogout() {
     return this.setResponse(AuthFlowResponseType.RedirectAfterLogout);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.RedirectToLoginPage} type.
+   */
   @action
   setRedirectToLoginPage(props?: Partial<AuthFlowResponse>) {
     return this.setResponse(AuthFlowResponseType.RedirectToLoginPage, props);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.RedirectToLastContentRoute} type.
+   */
   @action
   setRedirectToLastPrivateRoute() {
     return this.setResponse(AuthFlowResponseType.RedirectToLastContentRoute);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.PassThroughAuthRoute} type.
+   */
   @action
   setPassThroughAuthRoute(props?: Partial<AuthFlowResponse>): Result<AuthFlowResponse> {
     return this.setResponse(AuthFlowResponseType.PassThroughAuthRoute, props);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.PassThroughPrivateRoute} type.
+   */
   @action
   setPassThroughPrivateRoute(props?: Partial<AuthFlowResponse>): Result<AuthFlowResponse> {
     return this.setResponse(AuthFlowResponseType.PassThroughPrivateRoute, props);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.PassThroughPublicRoute} type.
+   */
   @action
   setPassThroughPublicRoute(props?: Partial<AuthFlowResponse>): Result<AuthFlowResponse> {
     return this.setResponse(AuthFlowResponseType.PassThroughPublicRoute, props);
   }
 
+  /**
+   * Sets the final response of the orchestrator as a response of the
+   * {@link AuthFlowResponseType.AwaitRedirect} type.
+   */
   @action
   setAwaitRedirect(props?: Partial<AuthFlowResponse>): Result<AuthFlowResponse> {
     return this.setResponse(AuthFlowResponseType.AwaitRedirect, props);
@@ -441,6 +545,10 @@ export class AuthOrchestrator
     return [res];
   }
 
+  /**
+   * Pre-composed batch of steps on this orchestrator which
+   * authenticates the user with credentials.
+   */
   async batchAuthorizeFromLogin(input: LoginInput): AsyncResult<true> {
 
     return batch([
@@ -453,6 +561,10 @@ export class AuthOrchestrator
     ]);
   }
 
+  /**
+   * Pre-composed batch of steps on this orchestrator which
+   * authenticates the user from an existing session.
+   */
   async batchAuthorizeFromSession(): AsyncResult<true> {
 
     return await batch([
@@ -464,5 +576,4 @@ export class AuthOrchestrator
       () => this.pushAuthorizedState(),
     ]);
   }
-
 }

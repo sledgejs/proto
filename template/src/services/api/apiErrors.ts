@@ -1,17 +1,29 @@
-import { withTypedKeysErrorLookup } from '../../errors/errorLookupUtils';
+export const ApiErrorLookup = {
+  'Api.NotAuthorized': {
+    message: `The user is not authorized to access this API resource.`
+  },
 
-export const ApiErrorLookup = withTypedKeysErrorLookup({
-  'Api.NotAuthorized': {},
-  'Api.RetryRequestFailed': {},
+  'Api.RetryRequestFailed': {
+    message: `The request failed after retrying.`
+  },
+
   'Api.AuthContextInvalidated': {
     message: `AuthContext got invalidated.`
   },
 
-  'Api.ProviderNotAuthorized': {},
+  'Api.ProviderNotAuthorized': {
+    message: `The raw request failed with a 401 HTTP Unauthorized error.`
+  },
 
-  'Api.GraphQlError': {},
-  'Api.UploadError': {},
-  'Api.MissingGraphQlData': {},
-  'Api.FalsyMutationResult': {},
-  'Api.MalformedResponse': {}
-});
+  'Api.GraphQlError': {
+    message: `An error related to GraphQL has occurred.`
+  },
+
+  'Api.UploadError': {
+    message: `An error occurred while uploading the file.`
+  },
+
+  'Api.MalformedResponse': {
+    message: `The response from the server is either malformed or missing.` 
+  }
+}

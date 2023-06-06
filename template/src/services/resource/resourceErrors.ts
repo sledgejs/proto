@@ -1,7 +1,5 @@
-import { withTypedKeysErrorLookup } from '../../errors/errorLookupUtils';
-
-export const ResourceErrorLookup = withTypedKeysErrorLookup({
+export const ResourceErrorLookup = {
   'Resources.LoadScriptFailed': {
     message: `Failed to load the script.`
   }
-});
+}

@@ -1,7 +1,5 @@
-import { withTypedKeysErrorLookup } from '../errors/errorLookupUtils';
-
-export const ServiceErrorLookup = withTypedKeysErrorLookup({
+export const ServiceErrorLookup = {
   'Services.LoadServiceFailed': {
     message: `Failed to load the service.`
   }
-});
+}

@@ -1,7 +1,7 @@
 import { computed, makeObservable } from 'mobx';
 import { Node } from '../../../kernel/node';
 import { Kernel } from '../../../kernel/kernel';
-import { AuthFlowName, type AuthFlowResponse } from '../authSchema';
+import { AuthFlowName, IAuthFlow, type AuthFlowResponse } from '../authSchema';
 import { AuthOrchestrator } from '../authOrchestrator';
 import type { AsyncResult, AbortableProps } from '../../../core/types';
 import { initDev, trace } from '../../../dev';
@@ -10,14 +10,15 @@ type Props = AbortableProps;
 
 export type BaseAuthFlowProps = Props;
 
+/**
+ * Base class for all auth flow implementations.
+ * Abstracts away the abort logic, the creation of the orchestrator
+ * and exposes some shortcut getters.
+ */
 export abstract class BaseAuthFlow
-  extends Node {
+  extends Node
+  implements IAuthFlow {
 
-  /**
-   * Creates a new instance of the `BaseAuthFlow` abstract class.
-   * This sets the props provided on the instance and also configures
-   * and assigns the AuthOrchestrator to the instance.
-   */
   constructor(kernel: Kernel, props: Props = {}) {
     super(kernel);
     makeObservable(this);
@@ -36,8 +37,15 @@ export abstract class BaseAuthFlow
   abstract get flowName(): AuthFlowName;
 
   readonly abortSignal: AbortSignal | null = null;
+
+  /**
+   * The backing auth orchestrator for this flow.
+   */
   readonly orchestrator: AuthOrchestrator;
 
+  /**
+   * Returns the flow response from the orchestrator, once the flow completes.
+   */
   @computed
   get response() {
     return this.orchestrator.response;

@@ -58,5 +58,8 @@ export type ApiRequestExecutorParams =
     token: string | null;
   };
 
+/**
+ * The callback which executes the custom implementation of the request.
+ */
 export type ApiRequestExecutor<T> =
   (params: ApiRequestExecutorParams) => AsyncResult<T>;

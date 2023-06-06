@@ -1,6 +1,4 @@
-import { withTypedKeysErrorLookup } from '../../errors/errorLookupUtils';
-
-export const StorageErrorLookup = withTypedKeysErrorLookup({
+export const StorageErrorLookup = {
   'SessionStorageNotAvailable': {
     message: `Session storage is not available.`
   },
@@ -16,5 +14,4 @@ export const StorageErrorLookup = withTypedKeysErrorLookup({
   'LocalStorageValueNotSetProperly': {
     message: `Could not set the value in local storage properly.`
   }
-});
-
+};

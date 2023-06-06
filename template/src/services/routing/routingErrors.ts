@@ -1,6 +1,4 @@
-import { withTypedKeysErrorLookup } from '../../errors/errorLookupUtils';
-
-export const RoutingErrorLookup = withTypedKeysErrorLookup({
+export const RoutingErrorLookup = {
 
   'Routing.RedirectUrlExceedsMaxLength': {
     message: `Unable to prepare the state for the redirect. URL exceeded maximum length and session storage is not supported.`
@@ -9,4 +7,4 @@ export const RoutingErrorLookup = withTypedKeysErrorLookup({
   'Routing.DefaultRouteDescriptorMissing': {
     message: `The default RouteDescriptor is missing.`
   }
-});
+}

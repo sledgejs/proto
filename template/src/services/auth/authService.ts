@@ -49,21 +49,27 @@ export class AuthService
     return this.context?.identity ?? null;
   }
 
-
+  /**
+   * A reference to the first auth flow that was run on this service.
+   */
   @observable initialFlow: IAuthFlow | null = null;
-  @computed get initialFlowName(): string | null {
-    return this.initialFlow?.flowName ?? null;
-  }
 
+  /**
+   * A reference to the current auth flow that is currently running on this service.
+   */
   @observable currentFlow: IAuthFlow | null = null;
-  @computed get currentFlowName(): string | null {
-    return this.currentFlow?.flowName ?? null;
-  }
 
+  /**
+   * Returns `true` if a flow can be currently started on this service.
+   */
   @computed get canRunFlow(): boolean {
     return !this.currentFlow;
   }
   
+  /**
+   * Registers a flow into this service, marks it as running and
+   * registers a reference to it.
+   */
   @action
   enterFlow(flow: IAuthFlow) {
     trace(this, { flow });
@@ -74,6 +80,10 @@ export class AuthService
     this.currentFlow = flow;
   }
 
+  /**
+   * Marks the current flow that was registered on this service as settled
+   * and removes the reference to it.
+   */
   @action
   exitFlow() {
     trace(this);

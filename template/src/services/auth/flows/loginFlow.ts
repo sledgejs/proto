@@ -6,6 +6,9 @@ import { BaseAuthFlow } from './baseAuthFlow';
 
 import { trace } from '../../../dev';
 
+/**
+ * This flow authenticates the user using credentials.
+ */
 export class LoginFlow
   extends BaseAuthFlow
   implements IAuthFlow {

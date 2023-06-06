@@ -14,8 +14,6 @@ export enum ErrorCode {
   'Api.ProviderNotAuthorized' = 'Api.ProviderNotAuthorized',
   'Api.GraphQlError' = 'Api.GraphQlError',
   'Api.UploadError' = 'Api.UploadError',
-  'Api.MissingGraphQlData' = 'Api.MissingGraphQlData',
-  'Api.FalsyMutationResult' = 'Api.FalsyMutationResult',
   'Api.MalformedResponse' = 'Api.MalformedResponse',
   'Auth.ExistingSessionNotFound' = 'Auth.ExistingSessionNotFound',
   'Auth.ExistingSessionExpired' = 'Auth.ExistingSessionExpired',

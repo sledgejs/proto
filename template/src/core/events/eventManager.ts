@@ -1,16 +1,22 @@
 import { EventDictionary, ManagedEventHandler } from './eventSchema';
 import { ManagedEvent } from './managedEvent';
 
+/**
+ * Simple event manager for emitting events and registering listeners.
+ */
 export class EventManager<TEvents extends EventDictionary = EventDictionary, TSource = any> {
 
   constructor(source: TSource) {
     this.source = source;
   }
 
-  readonly source: TSource;
-  readonly listeners = new Set<ManagedEventHandler<TEvents, keyof TEvents, TSource>>();
-  readonly handlerLookup = new Map<keyof TEvents, Set<ManagedEventHandler<TEvents, any, TSource>>>();
+  private readonly source: TSource;
+  private readonly listeners = new Set<ManagedEventHandler<TEvents, keyof TEvents, TSource>>();
+  private readonly handlerLookup = new Map<keyof TEvents, Set<ManagedEventHandler<TEvents, any, TSource>>>();
 
+  /**
+   * Emits an event using the provided type and payload.
+   */
   emit<T extends keyof TEvents>(type: T, payload: TEvents[T]) {
     const evt = new ManagedEvent({
       type,
@@ -25,14 +31,23 @@ export class EventManager<TEvents extends EventDictionary = EventDictionary, TSo
       listener?.(evt));
   }
 
+  /**
+   * Registers an event listener to this manager.
+   */
   listen(listener: ManagedEventHandler<TEvents, keyof TEvents, TSource>) {
     this.listeners.add(listener);
   }
 
+  /**
+   * Removes an event listener from this manager.
+   */
   unlisten(listener: ManagedEventHandler<TEvents, keyof TEvents, TSource>) {
     this.listeners.delete(listener);
   }
 
+  /**
+   * Registers an event handler for a particular event.
+   */
   on<T extends keyof TEvents>(type: T, handler: ManagedEventHandler<TEvents, T, TSource>) {
     const lookup = this.handlerLookup;
     let handlers = lookup.get(type);
@@ -45,6 +60,9 @@ export class EventManager<TEvents extends EventDictionary = EventDictionary, TSo
     return true;
   }
 
+  /**
+   * Removes an event handler for a particular event.
+   */
   off<T extends keyof TEvents>(type: T, handler?: ManagedEventHandler<TEvents, T, TSource>) {
     const lookup = this.handlerLookup;
     let handlers = lookup.get(type);

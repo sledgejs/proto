@@ -3,19 +3,26 @@ import { ObjectLiteral } from '../../core/types';
 import { AsyncResult } from '../../core/types';
 import { Error } from '../../errors/error';
 
-export type AuthFlowOptions = AbortableParams;
-
+/**
+ * The interface for all auth flow implementations
+ */
 export interface IAuthFlow {
   
-  /** 
-   * Runs the flow using the provided arguments.
+  /**
+   * The abort signal that was provided when the instance was created.
    */
-  run(...args: any[]): AsyncResult<AuthFlowResponse>;
+  abortSignal: AbortSignal | null;
 
   /** 
    * The qualified name of the flow.
    */
   flowName: AuthFlowName;
+  
+  /**
+   * Runs the flow using the provided arguments,
+   * and returns an auth flow response once it completes.
+   */
+  run(...args: any[]): AsyncResult<AuthFlowResponse>;
 }
 
 /**
@@ -85,38 +92,45 @@ export enum AuthFlowName {
   RefreshContext = 'RefreshContext'
 }
 
+/**
+ * Qualified type for auth flow responses.
+ */
 export enum AuthFlowResponseType {
-  DuplicatedUsername = 'DupliatedUsername',
-  AvailableUsername = 'AvailableUsername',
-
   Success = 'Success',
   Authorized = 'Authorized',
-  
   RedirectToLastContentRoute = 'RedirectToLastContentRoute',
-
   RedirectToLoginPage = 'RedirectToLoginPage',
-
   RedirectToDefaultPage = 'RedirectToDefaultPage',
-
-  /** 
-   * Used after logout to redirect the user either to the last public route
-   * if it was the route from which the user logged out, or to the sign in page
-   * if the previous route was a private one.
-   */
   RedirectAfterLogout = 'RedirectAfterLogout',
-
   PassThroughAuthRoute = 'PassThroughAuthRoute',
-
   PassThroughPrivateRoute = 'PassThroughPrivateRoute',
-
   PassThroughPublicRoute = 'PassThroughPublicRoute',
-
   AwaitRedirect = 'AwaitRedirect'
 }
 
+/**
+ * Represents the response returned by an auth flow.
+ */
 export type AuthFlowResponse = {
+  /**
+   * The response type which instructs the application what
+   * to do with this flow response.
+   */
   responseType: AuthFlowResponseType;
+  
+  /**
+   * An additional non-fatal error object that can be a reason
+   * for a particular response type.
+   * This is not an unrecoverable error, because for that no response
+   * would be returned, but rather an actual error result (null, error) would be used.
+   * This error for example can be used to display a validation error in the login page
+   * if the response type is set to {@link AuthFlowResponseType.RedirectToLoginPage}.
+   */ 
   error?: Error | null;
+  
+  /**
+   * Additional routing state to pass between redirects.
+   */
   state?: ObjectLiteral | null;
 }
 

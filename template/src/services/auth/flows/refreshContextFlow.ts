@@ -2,6 +2,9 @@ import { AuthFlowName, type AuthFlowResponse } from '../authSchema';
 import type { AsyncResult } from '../../../core/types';
 import { BaseAuthFlow } from './baseAuthFlow';
 
+/**
+ * Attempts to refresh a session that exists on the user machine.
+ */
 export class RefreshContextFlow
   extends BaseAuthFlow {
 

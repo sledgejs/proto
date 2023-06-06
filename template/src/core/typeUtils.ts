@@ -1,5 +1,5 @@
 import { Error } from '../errors/error';
-import { Maybe, Result } from './types';
+import { Result } from './types';
 import dayjs, { Dayjs } from 'dayjs';
 
 export function certifyType<T>(arg: any): asserts arg is T { }

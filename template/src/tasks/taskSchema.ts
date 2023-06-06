@@ -55,7 +55,7 @@ export interface ITask<T = DefaultTaskValueType>
   label: string | null;
 
   /**
-   * Gets the abort signal the task has been initialized with.
+   * Gets the abort signal that was provided when the instance was created.
    * If an abort signal was provided in the constructor, it will be returned.
    * Otherwise `null` will be returned and the task will not be abortable.
    */

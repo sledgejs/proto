@@ -145,6 +145,13 @@ export class ApiService
     return client;
   }
 
+  /**
+   * Creates a GraphQL query task using the provided options.
+   * This method does not run the task, it only returns it.
+   * 
+   * @typeParam TData The type of the data returned by the query.
+   * @typeParam TVars The type of the variables passed to the query.
+   */
   query<TData = any, TVars extends OperationVariables = OperationVariables>(
     options: GraphQlQueryParams<TData, TVars>)
     : GraphQlQueryTask<TData, TVars> {
@@ -157,6 +164,13 @@ export class ApiService
     return task;
   }
 
+  /**
+   * Creates a GraphQL query task using the provided options, 
+   * runs it and returns its result.
+   * 
+   * @typeParam TData The type of the data returned by the query.
+   * @typeParam TVars The type of the variables passed to the query.
+   */
   async runQuery<TData = any, TVars extends OperationVariables = OperationVariables>(
     options: GraphQlQueryParams<TData, TVars>): AsyncResult<TData> {
 
@@ -164,6 +178,13 @@ export class ApiService
     return task.run();
   }
 
+  /**
+   * Creates a GraphQL mutation task using the provided options.
+   * This method does not run the mutation, it only returns it.
+   * 
+   * @typeParam TData The type of the data returned by the mutation.
+   * @typeParam TVars The type of the variables passed to the mutation.
+   */
   mutation<TData = any, TVars extends OperationVariables = OperationVariables>(
     options: GraphQlMutationParams<TData, TVars>)
     : GraphQlMutationTask<TData, TVars> {
@@ -176,6 +197,13 @@ export class ApiService
     return task;
   }
 
+  /**
+   * Creates a GraphQL mutation task using the provided options, 
+   * runs it and returns its result.
+   * 
+   * @typeParam TData The type of the data returned by the mutation.
+   * @typeParam TVars The type of the variables passed to the mutation.
+   */
   async runMutation<TData = any, TVars extends OperationVariables = OperationVariables>(
     options: GraphQlMutationParams<TData, TVars>)
     : AsyncResult<TData> {
@@ -184,6 +212,13 @@ export class ApiService
     return task.run();
   }
 
+  /**
+   * Creates a GraphQL subscription object using the provided options.
+   * This method does not start the subscription, it only returns it.
+   * 
+   * @typeParam TData The type of the data emitted by the subscription.
+   * @typeParam TVars The type of the variables passed to the subscription.
+   */
   subscription<TData = any, TVars extends OperationVariables = OperationVariables>(
     options: GraphQlSubscriptionParams<TData, TVars>)
     : GraphQlSubscription<TData, TVars> {
@@ -196,6 +231,13 @@ export class ApiService
     return subscription;
   }
 
+  /**
+   * Creates a GraphQL subscription object using the provided options, 
+   * starts it and returns the `Observable` associated with the subscription.
+   * 
+   * @typeParam TData The type of the data emitted by the subscription.
+   * @typeParam TVars The type of the variables passed to the subscription.
+   */
   async startSubscription<TData = any, TVars extends OperationVariables = OperationVariables>(
     options: GraphQlSubscriptionParams<TData, TVars>)
     : AsyncResult<Observable<TData>> {
@@ -204,10 +246,17 @@ export class ApiService
     return subscription.start();
   }
 
+  /**
+   * Evicts the Apollo cache.
+   */
   evictCache() {
     this.cache.evict({});
   }
 
+  /**
+   * Recreates the Apollo client in order to keep it synchronized
+   * with the authentication state.
+   */
   syncClient() {
     this.client.stop();
     this.client = this.createApolloClient();

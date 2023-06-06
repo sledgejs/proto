@@ -3,12 +3,13 @@ import { ServiceErrorLookup } from '../services/serviceErrors';
 import { AuthErrorLookup } from '../services/auth/authErrors';
 import { ResourceErrorLookup } from '../services/resource/resourceErrors';
 
-import { withTypedKeysErrorLookup } from './errorLookupUtils';
 import { RoutingErrorLookup } from '../services/routing/routingErrors';
 import { ApiErrorLookup } from '../services/api/apiErrors';
 import { FormErrorLookup } from '../components/form/formErrors';
+import { ErrorCode } from './errorCode';
+import { ErrorDescriptor } from './errorSchema';
 
-export const ErrorLookup = withTypedKeysErrorLookup({
+export const ErrorLookup: Record<ErrorCode, ErrorDescriptor> = {
   // core
   ...StorageErrorLookup,
   
@@ -79,4 +80,4 @@ export const ErrorLookup = withTypedKeysErrorLookup({
   NetworkOffline: {
     message: `Network is offline.`
   }
-});
+}

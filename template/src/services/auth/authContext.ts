@@ -44,11 +44,6 @@ type Props = AuthContextProps;
  */
 export class AuthContext {
 
-  /**
-   * Creates a new instance of the {@link AuthContext} class 
-   * using the provided arguments.
-   * @param props The properties to set on the new instance.
-   */
   constructor(props: Props) {
 
     this.type = props.type;
@@ -69,23 +64,23 @@ export class AuthContext {
   }
 
   /**
-   * A locally unique identifier for the current instance.
+   * A locally unique identifier for the current context.
    */
   readonly contextId = nanoid();
 
   /**
-   * The authentication type of the current instance.
+   * The authentication type of the current context.
    */
   readonly type: AuthContextType;
 
   /**
-   * Reference to the {@link AuthPermit} set on the current instance,
+   * Reference to the {@link AuthPermit} set on the current context,
    * or `null` if the context is of the {@link AuthContextType.Anonymous} type.
    */
   readonly permit: AuthPermit | null = null;
 
   /**
-   * Reference to the {@link UserIdentity} set on the current instance,
+   * Reference to the {@link UserIdentity} set on the current context,
    * or `null` if the context is of the {@link AuthContextType.Anonymous} type.
    */
   readonly identity: UserIdentity | null = null;

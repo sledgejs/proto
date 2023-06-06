@@ -10,6 +10,9 @@ type Props<
     source: TSource;
   }
 
+/**
+ * Represents a custom event in the context of the application.
+ */
 export class ManagedEvent<
   TEvents extends EventDictionary = EventDictionary,
   T extends keyof TEvents = string,

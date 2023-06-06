@@ -1,6 +1,4 @@
-import { withTypedKeysErrorLookup } from '../../errors/errorLookupUtils';
-
-export const AuthErrorLookup = withTypedKeysErrorLookup({
+export const AuthErrorLookup = {
 
   'Auth.ExistingSessionNotFound': {
     message: `No valid existing session has been found.`
@@ -14,9 +12,19 @@ export const AuthErrorLookup = withTypedKeysErrorLookup({
     message: `There is a flow which is already running.`
   },
 
-  'Auth.InvalidToken': {},
-  'Auth.InvalidPermit': {},
-  'Auth.TokenExpired': {},
-  'Auth.FetchIdentityError': {}
+  'Auth.InvalidToken': {
+    message: `The token is invalid.`
+  },
+
+  'Auth.InvalidPermit': {
+    message: `The AuthPermit is invalid.`
+  },
+
+  'Auth.TokenExpired': {
+    message: `The token has expired.`
+  },
   
-});
+  'Auth.FetchIdentityError': {
+    message: `Failed to fetch the identity for the context.`
+  }
+};

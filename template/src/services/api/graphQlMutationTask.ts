@@ -15,8 +15,10 @@ type Props<
   };
 
 /** 
- * Wrapper around a GraphQL request made using Apollo. 
- * Handles everything regarding authentication, network connectivity, debugging, etc.
+ * Task-based implementation of a GraphQL mutation.
+ * 
+ * @typeParam TData The type of the data returned by the mutation.
+ * @typeParam TVars The type of the variables passed to the mutation.
  */
 export class GraphQlMutationTask<
   TData = any,
@@ -30,30 +32,37 @@ export class GraphQlMutationTask<
     this.client = props.client;
     this.params = props;
 
-    initDev(this, {
-      instanceName: this.operationName,
-      color: 'green'
-    });
+    initDev(this);
     trace(this);
   }
 
-  readonly id = nanoid();
+  private readonly client: ApolloClient<NormalizedCacheObject>;
+  private readonly params: GraphQlMutationParams<TData, TVars>;
 
-  readonly client: ApolloClient<NormalizedCacheObject>;
-  readonly params: GraphQlMutationParams<TData, TVars>;
-
+  /**
+   * Returns the mutation document of this request.
+   */
   get mutation(): DocumentNode | TypedDocumentNode<TData, TVars> {
     return this.params.mutation;
   }
   
+  /**
+   * Returns the mutation variables of this request.
+   */
   get variables(): TVars | null {
     return this.params.variables ?? null;
   }
 
+  /**
+   * Returns the operation name of this request.
+   */
   get operationName(): string | null {
     return getGraphQlOperationName(this.mutation);
   }
 
+  /**
+   * Implementation of {@link BaseTask.executor} which runs the actual request.
+   */
   protected async executor(): AsyncResult<TData> {
     return runGraphQlMutation(this, this.client, this.params);
   }

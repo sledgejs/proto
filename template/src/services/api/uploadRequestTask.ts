@@ -45,20 +45,45 @@ export class UploadRequestTask
     });
   }
 
+  /** 
+   * The URL to which to upload the file. 
+   */
   readonly url: string;
+  
+  /**
+   * The file to upload.
+   */
   readonly file: File;
+
+  /**
+   * Collection of form fields to send in the multipart request.
+   */
   readonly data?: UploadRequestFormField[];
 
   private cancelToken?: CancelTokenSource;
 
+  /**
+   * The number of total bytes that need to be transferred once
+   * this information becomes available.
+   */
   @observable totalBytes: number = 0;
+
+  /**
+   * The number of bytes that has already been transferred.
+   */
   @observable loadedBytes: number = 0;
 
+  /**
+   * The ratio of uploaded to total bytes.
+   */
   @computed
   get progressRatio(): number {
     return this.loadedBytes / this.totalBytes;
   }
 
+  /**
+   * Implementation of {@link BaseTask.executor} which runs the actual request.
+   */
   protected async executor(): AsyncResult {
 
     const CancelToken = axios.CancelToken;

@@ -14,8 +14,10 @@ type Props<
   };
 
 /** 
- * Wrapper around a GraphQL request made using Apollo. 
- * Handles everything regarding authentication, network connectivity, debugging, etc.
+ * Task-based implementation of a GraphQL query.
+ * 
+ * @typeParam TData The type of the data returned by the query.
+ * @typeParam TVars The type of the variables passed to the query.
  */
 export class GraphQlQueryTask<
   TData = any,
@@ -29,30 +31,37 @@ export class GraphQlQueryTask<
     this.client = props.client;
     this.params = props;
 
-    initDev(this, {
-      instanceName: this.operationName,
-      color: 'green'
-    });
+    initDev(this);
     trace(this);
   }
 
-  readonly id = nanoid();
+  private readonly client: ApolloClient<NormalizedCacheObject>;
+  private readonly params: GraphQlQueryParams<TData, TVars>;
 
-  readonly client: ApolloClient<NormalizedCacheObject>;
-  readonly params: GraphQlQueryParams<TData, TVars>;
-
+  /**
+   * Returns the query document of this request.
+   */
   get query(): DocumentNode | TypedDocumentNode<TData, TVars> {
     return this.params.query;
   }
   
+  /**
+   * Returns the query variables of this request.
+   */
   get variables(): TVars | null {
     return this.params.variables ?? null;
   }
 
+  /**
+   * Returns the operation name of this request.
+   */
   get operationName(): string | null {
     return getGraphQlOperationName(this.query);
   }
 
+  /**
+   * Implementation of {@link BaseTask.executor} which runs the actual request.
+   */
   protected async executor(): AsyncResult<TData> {
     return runGraphQlQuery(this, this.client, this.params);
   }
