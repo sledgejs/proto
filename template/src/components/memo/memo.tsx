@@ -1,6 +1,4 @@
-import './memo.scss';
-
-import React, { HTMLAttributes, ReactNode, useId } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { observer } from 'mobx-react-lite';
 import classNames from 'classnames';
 import { MemoContent, MemoType } from './memoSchema';
@@ -11,6 +9,11 @@ type Props = Omit<HTMLAttributes<{}>, 'content'> & {
   type?: MemoType | null;
 }
 
+/**
+ * Displays a message customized with a {@link MemoType} status.
+ * Useful for displaying info, success, error and warning messages
+ * in all kinds of UI components. 
+ */
 export const Memo = observer(({
   content,
   type,

@@ -11,6 +11,11 @@ type Props = AbortableProps;
 
 export type BaseRouteLoadTaskProps = Props;
 
+/**
+ * Base class for all route load task implementations.
+ * Abstracts away all the backing task logic and some helpers
+ * to set the result using the resulting flow response.
+ */
 export abstract class BaseRouteLoadTask
   extends BaseTask<AuthFlowResponse> {
 
@@ -19,12 +24,22 @@ export abstract class BaseRouteLoadTask
     makeObservable(this);
   }
 
+  /**
+   * The flow which will be executed by the task.
+   * Must be initialized when initializing the task.
+   */
   abstract get flow(): IAuthFlow;
 
+  /**
+   * Gets the resulting flow response if the task has settled.
+   */
   @computed get flowResponse(): AuthFlowResponse | null {
     return this.delegate.value;
   }
 
+  /**
+   * The actual task implementation function used by the base task logic.
+   */
   abstract executor(): AsyncResult<AuthFlowResponse>;
 
   @action

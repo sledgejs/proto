@@ -6,6 +6,10 @@ import { BaseRouteLoadTask } from '../baseRouteLoadTask';
 
 import { trace } from '../../dev';
 
+/**
+ * Represents the load task for a {@link PublicRouteState}.
+ * Uses the {@link PublicRouteFlow} under the hood.
+ */
 export class PublicRouteLoadTask
   extends BaseRouteLoadTask {
 

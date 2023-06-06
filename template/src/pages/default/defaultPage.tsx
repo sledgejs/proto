@@ -1,10 +1,15 @@
 import { observer } from 'mobx-react-lite';
-import { Navigate } from 'react-router-dom';
-import { Routes } from '../../routes/routes';
 
-export const DefaultPage = observer(() => {
+type Props = {
+
+}
+
+export const DefaultPage = observer((props: Props) => {
+
   return (
-    <Navigate to={Routes.dashboard()} />
+    <div>
+      Sledge Boilerplate
+    </div>
   );
 });
 

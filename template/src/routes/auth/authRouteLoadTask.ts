@@ -4,12 +4,17 @@ import { type AuthFlowResponse, AuthFlowResponseType } from '../../services/auth
 import { AuthRouteFlow } from '../../services/auth/flows/authRouteFlow';
 import { BaseRouteLoadTask } from '../baseRouteLoadTask';
 
-import { trace } from '../../dev';
 import { Kernel } from '../../kernel/kernel';
 import { AbortableProps } from '../../core/types';
 
+import { trace } from '../../dev';
+
 type Props = AbortableProps;
 
+/**
+ * Represents the load task for an {@link AuthRouteState}.
+ * Uses the {@link AuthRouteFlow} under the hood.
+ */
 export class AuthRouteLoadTask
   extends BaseRouteLoadTask {
 

@@ -10,6 +10,10 @@ import { trace } from '../../dev';
 
 type Props = PropsWithChildren<{}>;
 
+/**
+ * Adds to a page a private route behavior.
+ * @see {@link PrivateRouteFlow} for more details about its behavior.
+ */
 export const PrivateRoute = observer((props: Props) => {
 
   const model = useModel((kernel) => new PrivateRouteState(kernel));

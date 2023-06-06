@@ -10,6 +10,10 @@ import { trace } from '../../dev';
 
 type Props = PropsWithChildren<{}>;
 
+/**
+ * Adds to a page a public route behavior.
+ * @see {@link PublicRouteFlow} for more details about its behavior.
+ */
 export const PublicRoute = observer((props: Props) => {
 
   const model = useModel(kernel =>

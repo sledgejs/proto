@@ -10,6 +10,10 @@ import { trace } from '../../dev';
 
 type Props = PropsWithChildren<{}>;
 
+/**
+ * Adds to a page an authentication route behavior.
+ * @see {@link AuthRouteFlow} for more details about its behavior.
+ */
 export const AuthRoute = observer((props: Props) => {
 
   const model = useModel((kernel) => new AuthRouteState(kernel));

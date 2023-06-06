@@ -6,6 +6,10 @@ import { PrivateRouteLoadTask } from './privateRouteLoadTask';
 
 import { trace } from '../../dev';
 
+/**
+ * Represents the model for the {@link PrivateRoute} component.
+ * Loads using {@link PrivateRouteLoadTask}.
+ */
 export class PrivateRouteState
   extends BaseRouteState {
 

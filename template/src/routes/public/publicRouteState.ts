@@ -6,6 +6,10 @@ import { PublicRouteLoadTask } from './publicRouteLoadTask';
 
 import { trace } from '../../dev';
 
+/**
+ * Represents the model for the {@link PublicRoute} component.
+ * Loads using {@link PublicRouteLoadTask}.
+ */
 export class PublicRouteState
   extends BaseRouteState {
 

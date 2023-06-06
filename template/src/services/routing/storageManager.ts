@@ -1,6 +1,5 @@
 import { Config } from '../../config/config';
 import { consumeSession, setSession } from '../../core/storage/sessionStorageUtils';
-import { IRouteStorage } from '../../routes/routeSchema';
 import { Node } from '../../kernel/node';
 import { Kernel } from '../../kernel/kernel';
 
@@ -13,8 +12,7 @@ const LastPrivatePathKey = ModuleConfig.lastPrivatePathKey;
  * Manages the routing storage for the {@link RoutingService}.
  */
 export class StorageManager
-  extends Node
-  implements IRouteStorage {
+  extends Node {
 
   /**
    * Creates a new instance of {@link StorageManager}.

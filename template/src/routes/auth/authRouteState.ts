@@ -6,6 +6,10 @@ import { AuthRouteLoadTask } from './authRouteLoadTask';
 
 import { trace } from '../../dev';
 
+/**
+ * Represents the model for the {@link AuthRoute} component.
+ * Loads using {@link AuthRouteLoadTask}.
+ */
 export class AuthRouteState
   extends BaseRouteState {
 

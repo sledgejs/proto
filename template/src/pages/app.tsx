@@ -16,7 +16,6 @@ import { Chunks } from '../integration/chunks';
 import { Kernel } from '../kernel/kernel';
 
 import { trace } from '../dev';
-import { BackdropPage } from './backdrop/backdropPage';
 
 type Props = {
   kernel: Kernel;
@@ -82,7 +81,9 @@ export const App = observer(({
   });
 
   const suspenseFallback = (
-    <BackdropPage />
+    <div className="backdrop-page">
+      Loading
+    </div>
   );
 
   const elem = (
