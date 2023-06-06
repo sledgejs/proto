@@ -1,13 +1,23 @@
+
 // #region Kernel
-export type { Kernel } from './kernel/kernel';
-export type { Node } from './kernel/node';
+export type {
+  Kernel,
+  Node
+} from './kernel';
+// #endregion
+
+// #region Integration
+export type { init } from './integration/init';
 // #endregion
 
 // #region Errors
-export type { Error, ErrorProps } from './errors/error';
-export type { ErrorGroup } from './errors/errorGroup';
-export type { ErrorCode } from './errors/errorCode';
-export type { ErrorDescriptor } from './errors/errorSchema';
+export type {
+  Error,
+  ErrorProps,
+  ErrorGroup,
+  ErrorCode,
+  ErrorDescriptor
+} from './errors';
 // #endregion
 
 // #region Tasks
@@ -15,118 +25,151 @@ export type {
   ITask,
   TaskExecutor,
   TaskStatus,
-  DefaultTaskValueType
-} from './tasks/taskSchema';
-export type { BaseTask } from './tasks/baseTask';
-export type { TaskDelegate } from './tasks/taskDelegate';
+  DefaultTaskValueType,
+  BaseTask,
+  TaskDelegate
+} from './tasks';
 // #endregion
 
 // #region Activities
 export type {
   ActivityStatus,
-  IActivity
-} from './activities/activitySchema';
-export type { BaseActivity } from './activities/baseActivity';
-export type { ActivityDelegate } from './activities/activityDelegate';
+  IActivity,
+  BaseActivity,
+  ActivityDelegate
+} from './activities';
+// #endregion
+
+// #region Services
+export type {
+  ServiceBase,
+  ServiceLoader,
+  ServiceName,
+  IService,
+  ServiceLookup
+} from './services';
 // #endregion
 
 // #region Services.Api
-export type { ApiService } from './services/api/apiService';
-
-export type { GraphQlQueryTask } from './services/api/graphQlQueryTask';
-export type { GraphQlMutationTask } from './services/api/graphQlMutationTask';
-export type { GraphQlSubscription } from './services/api/graphQlSubscription';
-export type { UploadRequestTask } from './services/api/uploadRequestTask';
-
 export type {
+  ApiService,
+  GraphQlQueryTask,
+  GraphQlMutationTask,
+  GraphQlSubscription,
+  UploadRequestTask,
   IApiRequestAuthMediator,
   IApiRequestNetworkMediator,
   ApiRequestExecutorParams,
-  ApiRequestExecutor
-} from './services/api/apiInteropSchema';
-
-export type {
+  ApiRequestExecutor,
   GraphQlOperationParams,
   GraphQlOperationBaseParams,
   GraphQlQueryParams,
   GraphQlMutationParams,
-  GraphQlSubscriptionParams
-} from './services/api/graphQlSchema';
-
-export type {
+  GraphQlSubscriptionParams,
   RunApiRequestParams,
-  runApiRequest
-} from './services/api/apiRequestHelpers';
-
-export type {
+  runApiRequest,
   runGraphQlQuery,
   runGraphQlMutation,
   runGraphQlSubscription
-} from './services/api/graphQlHelpers';
-
+} from './services/api';
 // #endregion
 
 // #region Services.Auth
-export type { AuthService } from './services/auth/authService';
 export type {
+  AuthService,
   IAuthFlow,
   AuthContextType,
   AuthStateType,
   AuthFlowName,
   AuthFlowResponse,
-  AuthFlowResponseType
-} from './services/auth/authSchema';
-
-export type { AuthState } from './services/auth/authState';
-export type { AuthStateMediator } from './services/auth/authStateMediator';
-export type { AuthStateManager } from './services/auth/authStateManager';
-export type { AuthContext, AuthContextProps } from './services/auth/authContext';
-export type { AuthPermit } from './services/auth/authPermit';
-export type { UserIdentity } from './services/auth/userIdentity';
-
-export type { AuthOrchestrator } from './services/auth/authOrchestrator';
+  AuthFlowResponseType,
+  AuthState,
+  AuthStateMediator,
+  AuthStateManager,
+  AuthContext,
+  AuthContextProps,
+  AuthPermit,
+  UserIdentity,
+  AuthOrchestrator
+} from './services/auth';
 
 // flows
-export type { BaseAuthFlow } from './services/auth/flows/baseAuthFlow';
-export type { AuthRouteFlow } from './services/auth/flows/authRouteFlow';
-export type { PrivateRouteFlow } from './services/auth/flows/privateRouteFlow';
-export type { PublicRouteFlow } from './services/auth/flows/publicRouteFlow';
-export type { LoginFlow } from './services/auth/flows/loginFlow';
-export type { LogoutFlow } from './services/auth/flows/logoutFlow';
-export type { RefreshContextFlow } from './services/auth/flows/refreshContextFlow';
+export type {
+  BaseAuthFlow,
+  AuthRouteFlow,
+  PrivateRouteFlow,
+  PublicRouteFlow,
+  LoginFlow,
+  LogoutFlow,
+  RefreshContextFlow
+} from './services/auth/flows';
 // #endregion
 
-// #region Services.Routing
-export type { RoutingService } from './services/routing/routingService';
-export type { HistoryManager } from './services/routing/historyManager';
-export type { StorageManager } from './services/routing/storageManager';
+// #region Other Services
+export type { ComponentService } from './services/component';
+export type { DiagnosticsService } from './services/diagnostics';
+export type { ErrorService } from './services/error';
+export type { EventService } from './services/event';
+export type { NetworkService } from './services/network';
 
+export type {
+  NotificationService,
+  Notification,
+  NotificationType
+} from './services/notification';
+
+export type {
+  ResourceService,
+  LoadResourceInjectPoint,
+  LoadResourceOptions
+} from './services/resource';
+
+export type {
+  RoutingService,
+  HistoryManager,
+  StorageManager
+} from './services/routing';
+
+export type { TaskService } from './services/task';
+export type { UiService } from './services/ui';
+export type { VendorService } from './services/vendor';
 // #endregion
 
-// #region services.notification
-export type { NotificationService } from './services/notification/notificationService';
-export type { Notification } from './services/notification/notification';
-export type { NotificationType } from './services/notification/notificationSchema';
-
+// #region Routes
+export type {
+  RouteType,
+  RouteAction,
+  RouteDescriptor,
+  RouteVisit,
+  RouteContext,
+  BaseRouteState,
+  BaseRouteLoadTask,
+  AuthRoute,
+  AuthRouteState,
+  AuthRouteLoadTask,
+  DirectRoute,
+  PrivateRoute,
+  PrivateRouteState,
+  PrivateRouteLoadTask,
+  PublicRoute,
+  PublicRouteState,
+  PublicRouteLoadTask,
+} from './routes';
 // #endregion
-
-// #region services.resource
-export type { ResourceService } from './services/resource/resourceService';
-export type { LoadResourceInjectPoint, LoadResourceOptions } from './services/resource/resourceSchema';
-// #endregion
-
-export type { ServiceBase } from './services/serviceBase';
-
 
 // #region Components
 export type {
   ComponentColor,
   ComponentSize,
   ComponentVariant,
-  ComponentState
-} from './components/componentSchema';
-export type { AuthFlowResponseInterpreter } from './components/auth/authFlowResponseInterpreter';
-export type { RoutingInterceptor } from './components/routing/routingInterceptor';
+  ComponentState,
+  AuthFlowResponseInterpreter,
+  RoutingInterceptor,
+  Memo,
+  MemoContent,
+  MemoInfo,
+  MemoType
+} from './components';
 // #endregion
 
 // #region Components.Forms
@@ -135,38 +178,40 @@ export type {
   FormHook,
   FormImperativeHook,
   FormHookObject,
-} from './components/form/formSchema';
-export type { FormState } from './components/form/formState';
-
-export type {
+  FormState,
   InputStatus,
   InputAction,
   InputRole,
   InputHookObject,
   InputHook,
-  InputImperativeHook
-} from './components/form/inputSchema';
-export type { InputState } from './components/form/inputState';
+  InputImperativeHook,
+  InputState,
+  FieldState,
+  LabelState
+} from './components/form';
+// #endregion
 
-export type { FieldState } from './components/form/fieldState';
-export type { LabelState } from './components/form/labelState';
-
+// #region Pages
+export type {
+  BasePageState
+} from './pages';
 // #endregion
 
 // #region Core
-export * from './core/types';
-
-export type { AsyncIterableRelay } from './core/async/asyncIterableRelay';
-export type { PromiseRelay } from './core/async/promiseRelay';
 export type {
+  AsyncIterableRelay,
+  PromiseRelay,
   BatchFunc,
   BatchFuncList,
   batch
-} from './core/async/batch';
+} from './core/async';
 
-export type { ManagedEvent } from './core/events/managedEvent';
-export type { EventManager } from './core/events/eventManager';
+export type { 
+  ManagedEvent, 
+  EventManager 
+} from './core/events';
 
 export type { PropManager } from './core/props/propManager';
-// export * from './core/props/propSchema';
+
+export * from './core/types';
 // #endregion
