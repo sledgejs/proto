@@ -1,2 +1,0 @@
-# Services / AuthService
-Manages authentication
