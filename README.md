@@ -5,5 +5,5 @@ The goal of Sledge is to offer a set of concepts and utilities which solve real-
 and problems which usually arise in large front-end applications.
 
 ### Authors
-Tibi Ionescu ([@tiborgg] (https://www.github.com/tiborgg))
-Catalin Gruia ([@catalingcg] (https://www.github.com/catalingcg))
+Tibi Ionescu - [@tiborgg](https://www.github.com/tiborgg)
+Catalin Gruia - [@catalingcg](https://www.github.com/catalingcg)
